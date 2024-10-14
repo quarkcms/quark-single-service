@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 )
 
 // 获取文件路径

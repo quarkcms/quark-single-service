@@ -1,15 +1,17 @@
 package main
 
 import (
+	"io"
+	"os"
+
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	admininstall "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/install"
-	adminmiddleware "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/middleware"
-	adminservice "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service"
-	miniappinstall "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/install"
-	miniappmiddleware "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/middleware"
-	miniappservice "github.com/quarkcloudio/quark-go/v2/pkg/app/miniapp/service"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/file"
+	admininstall "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
+	adminmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
+	adminservice "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
+	miniappmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/middleware"
+	miniappservice "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/service"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/file"
 	"github.com/quarkcloudio/quark-smart/config"
 	"github.com/quarkcloudio/quark-smart/database"
 	appadminservice "github.com/quarkcloudio/quark-smart/internal/admin/service"
@@ -19,8 +21,6 @@ import (
 	"github.com/quarkcloudio/quark-smart/pkg/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"io"
-	"os"
 )
 
 func main() {
@@ -94,9 +94,6 @@ func main() {
 
 		// 构建本项目数据库
 		database.Handle()
-
-		// 构建MiniApp数据库
-		miniappinstall.Handle()
 	}
 
 	// 管理后台中间件

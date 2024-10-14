@@ -3,15 +3,15 @@ package login
 import (
 	"github.com/dchest/captcha"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/icon"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/login"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/hash"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/icon"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/login"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/hash"
 	"github.com/quarkcloudio/quark-smart/config"
 	"gorm.io/gorm"
 )
@@ -111,7 +111,7 @@ func (p *Index) Handle(ctx *builder.Context) error {
 		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
 	}
 
-	adminInfo, err := (&model.Admin{}).GetInfoByUsername(loginRequest.Username)
+	adminInfo, err := (&model.User{}).GetInfoByUsername(loginRequest.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return ctx.JSON(200, message.Error("用户不存在"))
@@ -125,10 +125,10 @@ func (p *Index) Handle(ctx *builder.Context) error {
 	}
 
 	config := ctx.Engine.GetConfig()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, (&model.Admin{}).GetClaims(adminInfo))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, (&model.User{}).GetAdminClaims(adminInfo))
 
 	// 更新登录信息
-	(&model.Admin{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
+	(&model.User{}).UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
 
 	// 获取token字符串
 	tokenString, err := token.SignedString([]byte(config.AppKey))

@@ -1,12 +1,12 @@
 package resource
 
 import (
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/actions"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/service/searches"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/resource"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/utils/lister"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/actions"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service/searches"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/resource"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/utils/lister"
 	"github.com/quarkcloudio/quark-smart/internal/model"
 )
 

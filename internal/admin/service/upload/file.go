@@ -3,11 +3,11 @@ package upload
 import (
 	"reflect"
 
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/message"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/template/upload"
-	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v2/pkg/storage"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/message"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/upload"
+	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3/pkg/storage"
 	"github.com/quarkcloudio/quark-smart/config"
 )
 
@@ -70,7 +70,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 		result.Url = (&model.File{}).GetPath(result.Url)
 	}
 
-	adminInfo, err := (&model.Admin{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	adminInfo, err := (&model.User{}).GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
