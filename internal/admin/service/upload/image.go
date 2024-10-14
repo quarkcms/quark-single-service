@@ -278,9 +278,6 @@ func (p *Image) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSyste
 	}
 
 	pictureInfo, _ := (&model.Picture{}).GetInfoByHash(fileHash)
-	if err != nil {
-		return fileSystem, nil, err
-	}
 	if pictureInfo.Id != 0 {
 		fileInfo := &storage.FileInfo{
 			Name:   pictureInfo.Name,

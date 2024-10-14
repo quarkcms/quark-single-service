@@ -38,9 +38,6 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 	}
 
 	getFileInfo, _ := (&model.File{}).GetInfoByHash(fileHash)
-	if err != nil {
-		return fileSystem, nil, err
-	}
 	if getFileInfo.Id != 0 {
 		fileInfo := &storage.FileInfo{
 			Name: getFileInfo.Name,
