@@ -7,7 +7,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/tool/template/upload"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
 	"github.com/quarkcloudio/quark-go/v3/pkg/storage"
-	"github.com/quarkcloudio/quark-smart/config"
+	"github.com/quarkcloudio/quark-smart/v2/config"
 )
 
 type File struct {

@@ -3,7 +3,7 @@ package layout
 import (
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/layout"
 	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
-	"github.com/quarkcloudio/quark-smart/config"
+	"github.com/quarkcloudio/quark-smart/v2/config"
 )
 
 type Index struct {

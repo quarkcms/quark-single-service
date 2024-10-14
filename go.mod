@@ -1,4 +1,4 @@
-module github.com/quarkcloudio/quark-smart
+module github.com/quarkcloudio/quark-smart/v2
 
 go 1.18
 

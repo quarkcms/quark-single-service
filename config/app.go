@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/quarkcloudio/quark-smart/pkg/env"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/env"
 )
 
 type AppConfig struct {

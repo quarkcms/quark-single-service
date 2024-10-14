@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/quarkcloudio/quark-smart/pkg/env"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/env"
 )
 
 type RedisConfig struct {

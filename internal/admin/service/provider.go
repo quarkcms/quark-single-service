@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/quarkcloudio/quark-smart/internal/admin/service/dashboard"
-	"github.com/quarkcloudio/quark-smart/internal/admin/service/layout"
-	"github.com/quarkcloudio/quark-smart/internal/admin/service/login"
-	"github.com/quarkcloudio/quark-smart/internal/admin/service/resource"
-	"github.com/quarkcloudio/quark-smart/internal/admin/service/upload"
+	"github.com/quarkcloudio/quark-smart/v2/internal/admin/service/dashboard"
+	"github.com/quarkcloudio/quark-smart/v2/internal/admin/service/layout"
+	"github.com/quarkcloudio/quark-smart/v2/internal/admin/service/login"
+	"github.com/quarkcloudio/quark-smart/v2/internal/admin/service/resource"
+	"github.com/quarkcloudio/quark-smart/v2/internal/admin/service/upload"
 )
 
 // 注册服务

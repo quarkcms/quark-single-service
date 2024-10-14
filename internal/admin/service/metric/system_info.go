@@ -8,7 +8,7 @@ import (
 
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/descriptions"
 	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/template/dashboard/metrics"
-	"github.com/quarkcloudio/quark-smart/config"
+	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
 )
