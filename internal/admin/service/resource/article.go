@@ -97,17 +97,17 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 
 		field.Checkbox("position", "推荐位").
 			SetOptions([]*checkbox.Option{
-				{Value: 1, Label: "首页推荐"},
-				{Value: 2, Label: "频道推荐"},
-				{Value: 3, Label: "列表推荐"},
-				{Value: 4, Label: "详情推荐"},
+				field.CheckboxOption("首页推荐", 1),
+				field.CheckboxOption("频道推荐", 2),
+				field.CheckboxOption("列表推荐", 3),
+				field.CheckboxOption("详情推荐", 4),
 			}),
 
 		field.Radio("show_type", "展现形式").
 			SetOptions([]*radio.Option{
-				{Value: 1, Label: "无图"},
-				{Value: 2, Label: "单图"},
-				{Value: 3, Label: "多图"},
+				field.RadioOption("无图", 1),
+				field.RadioOption("单图", 2),
+				field.RadioOption("多图", 3),
 			}).
 			SetWhen(2, func() interface{} {
 				return []interface{}{
