@@ -63,8 +63,8 @@ func (p *Article) Fields(ctx *builder.Context) []interface{} {
 func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
-	// 获取分类
-	categorys, _ := (&model.Category{}).TreeSelect(false)
+	// 分类列表
+	categories, _ := (&model.Category{}).GetList()
 
 	return []interface{}{
 		field.ID("id", "ID"),
@@ -128,7 +128,7 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 			OnlyOnForms(),
 
 		field.TreeSelect("category_id", "分类目录").
-			SetTreeData(categorys).
+			SetTreeData(categories, "pid", "title", "id").
 			SetRules([]rule.Rule{
 				rule.Required("请选择分类目录"),
 			}).
@@ -188,11 +188,11 @@ func (p *Article) ExtendFields(ctx *builder.Context) []interface{} {
 
 // 搜索
 func (p *Article) Searches(ctx *builder.Context) []interface{} {
-	options, _ := (&model.Category{}).TreeSelect(false)
+	options, _ := (&model.Category{}).GetList()
 
 	return []interface{}{
 		searches.Input("title", "标题"),
-		searches.TreeSelect("category_id", "分类目录", options),
+		searches.TreeSelect("category_id", "分类目录").SetTreeData(options, "pid", "title", "id"),
 		searches.Status(),
 		searches.DatetimeRange("created_at", "创建时间"),
 	}

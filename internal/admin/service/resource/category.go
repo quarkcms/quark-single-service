@@ -57,8 +57,8 @@ func (p *Category) Fields(ctx *builder.Context) []interface{} {
 func (p *Category) BaseFields(ctx *builder.Context) []interface{} {
 	field := &resource.Field{}
 
-	// 获取分类
-	categorys, _ := (&model.Category{}).TreeSelect(true)
+	// 分类列表
+	categories, _ := (&model.Category{}).GetListWithRoot()
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -76,7 +76,7 @@ func (p *Category) BaseFields(ctx *builder.Context) []interface{} {
 			}),
 
 		field.TreeSelect("pid", "父节点").
-			SetTreeData(categorys).
+			SetTreeData(categories, -1, "pid", "title", "id").
 			OnlyOnForms(),
 
 		field.TextArea("description", "描述").

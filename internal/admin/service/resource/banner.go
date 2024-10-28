@@ -72,7 +72,7 @@ func (p *Banner) Searches(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		searches.Input("title", "标题"),
-		searches.Select("category_id", "广告位", options),
+		searches.Select("category_id", "广告位").SetOptions(options),
 		searches.Status(),
 		searches.DatetimeRange("created_at", "创建时间"),
 	}

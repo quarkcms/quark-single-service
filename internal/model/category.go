@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/treeselect"
 	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
 	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
@@ -50,48 +49,27 @@ func (m *Category) Seeder() {
 	db.Client.Create(&seeders)
 }
 
-// 获取TreeSelect组件数据
-func (model *Category) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
+// 获取菜单列表
+func (model *Category) GetList() (categories []Category, Error error) {
+	list := []Category{}
 
-	// 是否有根节点
-	if root {
-		list = append(list, treeselect.TreeData{
-			Title: "根节点",
-			Value: 0,
-		})
-	}
-
-	list = append(list, model.FindTreeSelectNode(0)...)
-
-	return list, nil
-}
-
-// 递归获取SelectTree组件数据
-func (model *Category) FindTreeSelectNode(pid int) (list []treeselect.TreeData) {
-	categories := []Category{}
-	db.Client.
-		Where("pid = ?", pid).
+	err := db.Client.
+		Where("status = ?", 1).
 		Order("sort asc,id asc").
 		Select("title", "id", "pid").
-		Find(&categories)
+		Find(&list).Error
 
-	if len(categories) == 0 {
-		return list
+	return list, err
+}
+
+// 获取菜单列表携带根节点
+func (model *Category) GetListWithRoot() (categories []Category, Error error) {
+	list, err := model.GetList()
+	if err != nil {
+		return list, err
 	}
 
-	for _, v := range categories {
-		item := treeselect.TreeData{
-			Value: v.Id,
-			Title: v.Title,
-		}
+	list = append(list, Category{Id: 0, Pid: -1, Title: "根节点"})
 
-		children := model.FindTreeSelectNode(v.Id)
-		if len(children) > 0 {
-			item.Children = children
-		}
-
-		list = append(list, item)
-	}
-
-	return list
+	return list, err
 }
