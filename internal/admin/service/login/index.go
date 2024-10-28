@@ -61,8 +61,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 
 	return []interface{}{
 		field.Text("username").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请输入用户名"),
+			SetRules([]rule.Rule{
+				rule.Required("请输入用户名"),
 			}).
 			SetPlaceholder("用户名").
 			SetWidth("100%").
@@ -70,8 +70,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 			SetPrefix(icon.New().SetType("icon-user")),
 
 		field.Password("password").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请输入密码"),
+			SetRules([]rule.Rule{
+				rule.Required("请输入密码"),
 			}).
 			SetPlaceholder("密码").
 			SetWidth("100%").
@@ -81,8 +81,8 @@ func (p *Index) Fields(ctx *builder.Context) []interface{} {
 		field.ImageCaptcha("captcha").
 			SetCaptchaIdUrl(captchaIdUrl).
 			SetCaptchaUrl(captchaUrl).
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请输入验证码"),
+			SetRules([]rule.Rule{
+				rule.Required("请输入验证码"),
 			}).
 			SetPlaceholder("验证码").
 			SetWidth("100%").

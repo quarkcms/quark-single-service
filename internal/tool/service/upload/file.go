@@ -37,9 +37,6 @@ func (p *File) BeforeHandle(ctx *builder.Context, fileSystem *storage.FileSystem
 	}
 
 	getFileInfo, _ := (&model.File{}).GetInfoByHash(fileHash)
-	if err != nil {
-		return fileSystem, nil, err
-	}
 	if getFileInfo.Id != 0 {
 		fileInfo := &storage.FileInfo{
 			Name: getFileInfo.Name,
@@ -69,7 +66,7 @@ func (p *File) AfterHandle(ctx *builder.Context, result *storage.FileInfo) error
 	}
 
 	// 插入数据库
-	id, err := (&model.File{}).InsertGetId(&model.File{
+	id, err := (&model.File{}).InsertGetId(model.File{
 		Name:   result.Name,
 		Size:   result.Size,
 		Ext:    result.Ext,

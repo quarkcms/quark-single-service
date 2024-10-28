@@ -44,12 +44,12 @@ func (p *Navigation) Fields(ctx *builder.Context) []interface{} {
 		field.Hidden("pid", "父节点"),
 
 		field.Text("title", "标题").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "标题必须填写"),
+			SetRules([]rule.Rule{
+				rule.Required("标题必须填写"),
 			}),
 
 		field.TreeSelect("pid", "父节点").
-			SetData(categorys).
+			SetTreeData(categorys).
 			SetDefault(0).
 			OnlyOnForms(),
 

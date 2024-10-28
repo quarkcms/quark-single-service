@@ -65,11 +65,11 @@ func (m *Post) Seeder() {
 }
 
 // 获取TreeSelect组件数据
-func (model *Post) TreeSelect(root bool) (list []*treeselect.TreeData, Error error) {
+func (model *Post) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
 
 	// 是否有根节点
 	if root {
-		list = append(list, &treeselect.TreeData{
+		list = append(list, treeselect.TreeData{
 			Title: "根节点",
 			Value: 0,
 		})
@@ -81,7 +81,7 @@ func (model *Post) TreeSelect(root bool) (list []*treeselect.TreeData, Error err
 }
 
 // 递归获取TreeSelect组件数据
-func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
+func (model *Post) FindTreeSelectNode(pid int) (list []treeselect.TreeData) {
 	posts := []Post{}
 	db.Client.
 		Where("pid = ?", pid).
@@ -95,7 +95,7 @@ func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 	}
 
 	for _, v := range posts {
-		item := &treeselect.TreeData{
+		item := treeselect.TreeData{
 			Value: v.Id,
 			Title: v.Title,
 		}

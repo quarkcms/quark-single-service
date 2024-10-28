@@ -38,8 +38,8 @@ func (p *Banner) Fields(ctx *builder.Context) []interface{} {
 		field.ID("id", "ID"),
 
 		field.Text("title", "标题").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "标题必须填写"),
+			SetRules([]rule.Rule{
+				rule.Required("标题必须填写"),
 			}),
 
 		field.Image("cover_id", "图片").
@@ -47,8 +47,8 @@ func (p *Banner) Fields(ctx *builder.Context) []interface{} {
 
 		field.Select("category_id", "广告位").
 			SetOptions(categorys).
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请选择广告位"),
+			SetRules([]rule.Rule{
+				rule.Required("请选择广告位"),
 			}).
 			OnlyOnForms(),
 

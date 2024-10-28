@@ -44,7 +44,7 @@ func (m *BannerCategory) Seeder() {
 }
 
 // 获取列表
-func (model *BannerCategory) Options() (options []*selectfield.Option, Error error) {
+func (model *BannerCategory) Options() (options []selectfield.Option, Error error) {
 	getList := []BannerCategory{}
 	err := db.Client.Find(&getList).Error
 	if err != nil {
@@ -52,7 +52,7 @@ func (model *BannerCategory) Options() (options []*selectfield.Option, Error err
 	}
 
 	for _, v := range getList {
-		option := &selectfield.Option{
+		option := selectfield.Option{
 			Label: v.Title,
 			Value: v.Id,
 		}

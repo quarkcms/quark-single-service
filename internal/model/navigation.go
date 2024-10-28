@@ -45,11 +45,11 @@ func (m *Navigation) Seeder() {
 }
 
 // 获取TreeSelect组件数据
-func (model *Navigation) TreeSelect(root bool) (list []*treeselect.TreeData, Error error) {
+func (model *Navigation) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
 
 	// 是否有根节点
 	if root {
-		list = append(list, &treeselect.TreeData{
+		list = append(list, treeselect.TreeData{
 			Title: "根节点",
 			Value: 0,
 		})
@@ -61,7 +61,7 @@ func (model *Navigation) TreeSelect(root bool) (list []*treeselect.TreeData, Err
 }
 
 // 递归获取TreeSelect组件数据
-func (model *Navigation) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
+func (model *Navigation) FindTreeSelectNode(pid int) (list []treeselect.TreeData) {
 	navigations := []Navigation{}
 	db.Client.
 		Where("pid = ?", pid).
@@ -74,7 +74,7 @@ func (model *Navigation) FindTreeSelectNode(pid int) (list []*treeselect.TreeDat
 	}
 
 	for _, v := range navigations {
-		item := &treeselect.TreeData{
+		item := treeselect.TreeData{
 			Value: v.Id,
 			Title: v.Title,
 		}

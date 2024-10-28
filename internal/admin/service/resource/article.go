@@ -77,12 +77,12 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 			SetDefault("ARTICLE"),
 
 		field.Text("title", "标题").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "标题必须填写"),
+			SetRules([]rule.Rule{
+				rule.Required("标题必须填写"),
 			}),
 
 		field.TextArea("description", "描述").
-			SetRules([]*rule.Rule{
+			SetRules([]rule.Rule{
 				rule.Max(200, "描述不能超过200个字符"),
 			}).
 			OnlyOnForms(),
@@ -96,7 +96,7 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 			OnlyOnForms(),
 
 		field.Checkbox("position", "推荐位").
-			SetOptions([]*checkbox.Option{
+			SetOptions([]checkbox.Option{
 				field.CheckboxOption("首页推荐", 1),
 				field.CheckboxOption("频道推荐", 2),
 				field.CheckboxOption("列表推荐", 3),
@@ -104,7 +104,7 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 			}),
 
 		field.Radio("show_type", "展现形式").
-			SetOptions([]*radio.Option{
+			SetOptions([]radio.Option{
 				field.RadioOption("无图", 1),
 				field.RadioOption("单图", 2),
 				field.RadioOption("多图", 3),
@@ -128,9 +128,9 @@ func (p *Article) BaseFields(ctx *builder.Context) []interface{} {
 			OnlyOnForms(),
 
 		field.TreeSelect("category_id", "分类目录").
-			SetData(categorys).
-			SetRules([]*rule.Rule{
-				rule.Required(true, "请选择分类目录"),
+			SetTreeData(categorys).
+			SetRules([]rule.Rule{
+				rule.Required("请选择分类目录"),
 			}).
 			OnlyOnForms(),
 

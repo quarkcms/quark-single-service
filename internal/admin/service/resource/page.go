@@ -56,20 +56,20 @@ func (p *Page) Fields(ctx *builder.Context) []interface{} {
 			SetDefault("PAGE"),
 
 		field.Text("title", "标题").
-			SetRules([]*rule.Rule{
-				rule.Required(true, "标题必须填写"),
+			SetRules([]rule.Rule{
+				rule.Required("标题必须填写"),
 			}),
 		field.Text("name", "缩略名").
 			OnlyOnForms(),
 
 		field.TextArea("description", "描述").
-			SetRules([]*rule.Rule{
+			SetRules([]rule.Rule{
 				rule.Max(200, "描述不能超过200个字符"),
 			}).
 			OnlyOnForms(),
 
 		field.TreeSelect("pid", "根节点").
-			SetData(pages).
+			SetTreeData(pages).
 			OnlyOnForms(),
 
 		field.Editor("content", "内容").OnlyOnForms(),
