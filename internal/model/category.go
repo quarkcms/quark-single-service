@@ -1,9 +1,10 @@
 package model
 
 import (
-	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +33,7 @@ type Category struct {
 func (m *Category) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
-	if (&appmodel.Menu{}).IsExist(102) {
+	if service.NewMenuService().IsExist(102) {
 		return
 	}
 
@@ -47,29 +48,4 @@ func (m *Category) Seeder() {
 		{Title: "默认分类", Name: "default", Type: "ARTICLE", Status: 1},
 	}
 	db.Client.Create(&seeders)
-}
-
-// 获取菜单列表
-func (model *Category) GetList() (categories []Category, Error error) {
-	list := []Category{}
-
-	err := db.Client.
-		Where("status = ?", 1).
-		Order("sort asc,id asc").
-		Select("title", "id", "pid").
-		Find(&list).Error
-
-	return list, err
-}
-
-// 获取菜单列表携带根节点
-func (model *Category) GetListWithRoot() (categories []Category, Error error) {
-	list, err := model.GetList()
-	if err != nil {
-		return list, err
-	}
-
-	list = append(list, Category{Id: 0, Pid: -1, Title: "根节点"})
-
-	return list, err
 }

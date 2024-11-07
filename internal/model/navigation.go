@@ -1,10 +1,10 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/treeselect"
-	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
 
@@ -27,7 +27,7 @@ type Navigation struct {
 func (m *Navigation) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
-	if (&appmodel.Menu{}).IsExist(109) {
+	if service.NewMenuService().IsExist(109) {
 		return
 	}
 
@@ -42,50 +42,4 @@ func (m *Navigation) Seeder() {
 		{Title: "默认导航", Status: 1},
 	}
 	db.Client.Create(&seeders)
-}
-
-// 获取TreeSelect组件数据
-func (model *Navigation) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
-
-	// 是否有根节点
-	if root {
-		list = append(list, treeselect.TreeData{
-			Title: "根节点",
-			Value: 0,
-		})
-	}
-
-	list = append(list, model.FindTreeSelectNode(0)...)
-
-	return list, nil
-}
-
-// 递归获取TreeSelect组件数据
-func (model *Navigation) FindTreeSelectNode(pid int) (list []treeselect.TreeData) {
-	navigations := []Navigation{}
-	db.Client.
-		Where("pid = ?", pid).
-		Order("sort asc,id asc").
-		Select("title", "id", "pid").
-		Find(&navigations)
-
-	if len(navigations) == 0 {
-		return list
-	}
-
-	for _, v := range navigations {
-		item := treeselect.TreeData{
-			Value: v.Id,
-			Title: v.Title,
-		}
-
-		children := model.FindTreeSelectNode(v.Id)
-		if len(children) > 0 {
-			item.Children = children
-		}
-
-		list = append(list, item)
-	}
-
-	return list
 }

@@ -1,10 +1,10 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/treeselect"
-	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
 
@@ -44,7 +44,7 @@ type Post struct {
 func (m *Post) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
-	if (&appmodel.Menu{}).IsExist(101) {
+	if service.NewMenuService().IsExist(101) {
 		return
 	}
 
@@ -62,51 +62,4 @@ func (m *Post) Seeder() {
 		{Title: "关于我们", Name: "aboutus", Content: "关于我们", Status: 1, Type: "PAGE"},
 	}
 	db.Client.Create(&seeders)
-}
-
-// 获取TreeSelect组件数据
-func (model *Post) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
-
-	// 是否有根节点
-	if root {
-		list = append(list, treeselect.TreeData{
-			Title: "根节点",
-			Value: 0,
-		})
-	}
-
-	list = append(list, model.FindTreeSelectNode(0)...)
-
-	return list, nil
-}
-
-// 递归获取TreeSelect组件数据
-func (model *Post) FindTreeSelectNode(pid int) (list []treeselect.TreeData) {
-	posts := []Post{}
-	db.Client.
-		Where("pid = ?", pid).
-		Where("type", "PAGE").
-		Order("id asc").
-		Select("title", "id", "pid").
-		Find(&posts)
-
-	if len(posts) == 0 {
-		return list
-	}
-
-	for _, v := range posts {
-		item := treeselect.TreeData{
-			Value: v.Id,
-			Title: v.Title,
-		}
-
-		children := model.FindTreeSelectNode(v.Id)
-		if len(children) > 0 {
-			item.Children = children
-		}
-
-		list = append(list, item)
-	}
-
-	return list
 }

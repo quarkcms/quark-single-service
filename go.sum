@@ -318,6 +318,8 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/quarkcloudio/quark-go/v3 v3.1.6 h1:XdHmUfI2xv1bWmgH1Py84xD3+/EkOdlJhmrV+XIC1rM=
 github.com/quarkcloudio/quark-go/v3 v3.1.6/go.mod h1:a/XylcdBzmSKE9OZ+n5D3m5uJnz/ZTQHULjja1hD3V4=
+github.com/quarkcloudio/quark-go/v3 v3.5.0 h1:LokJrJzI1BY6DD3hNmUg3iIBDeTUBIzw4CwHoC1yaiA=
+github.com/quarkcloudio/quark-go/v3 v3.5.0/go.mod h1:9Yols41XJc6WDbTnBQjasJspI1IHuhiCD3AP/viqZ3s=
 github.com/redis/go-redis/v9 v9.0.3 h1:+7mmR26M0IvyLxGZUHxu4GiBkJkVDid0Un+j4ScYu4k=
 github.com/redis/go-redis/v9 v9.0.3/go.mod h1:WqMKv5vnQbRuZstUwxQI195wHy+t4PuXDOjzMvcuQHk=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=

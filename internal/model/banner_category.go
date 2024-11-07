@@ -1,10 +1,10 @@
 package model
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/form/fields/selectfield"
-	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +25,7 @@ type BannerCategory struct {
 func (m *BannerCategory) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
-	if (&appmodel.Menu{}).IsExist(106) {
+	if service.NewMenuService().IsExist(106) {
 		return
 	}
 
@@ -41,23 +41,4 @@ func (m *BannerCategory) Seeder() {
 		{Title: "首页广告位", Name: "indexPage", Status: 1},
 	}
 	db.Client.Create(&seeders)
-}
-
-// 获取列表
-func (model *BannerCategory) Options() (options []selectfield.Option, Error error) {
-	getList := []BannerCategory{}
-	err := db.Client.Find(&getList).Error
-	if err != nil {
-		return options, err
-	}
-
-	for _, v := range getList {
-		option := selectfield.Option{
-			Label: v.Title,
-			Value: v.Id,
-		}
-		options = append(options, option)
-	}
-
-	return options, nil
 }

@@ -1,9 +1,10 @@
 package model
 
 import (
-	appmodel "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
-	"github.com/quarkcloudio/quark-go/v3/pkg/dal/db"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
 
@@ -27,7 +28,7 @@ type Banner struct {
 func (m *Banner) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
-	if (&appmodel.Menu{}).IsExist(108) {
+	if service.NewMenuService().IsExist(108) {
 		return
 	}
 

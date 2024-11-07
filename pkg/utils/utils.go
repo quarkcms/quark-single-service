@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
 )
 
 // 获取文件路径
@@ -13,7 +13,7 @@ func GetFilePath(id interface{}) string {
 		return ""
 	}
 
-	return (&model.File{}).GetPath(id)
+	return service.NewFileService().GetPath(id)
 }
 
 // 获取多文件路径
@@ -22,7 +22,7 @@ func GetFilePaths(id interface{}) []string {
 		return nil
 	}
 
-	return (&model.File{}).GetPaths(id)
+	return service.NewFileService().GetPaths(id)
 }
 
 // 获取图片路径
@@ -31,7 +31,7 @@ func GetPicturePath(id interface{}) string {
 		return ""
 	}
 
-	return (&model.Picture{}).GetPath(id)
+	return service.NewPictureService().GetPath(id)
 }
 
 // 获取多图片路径
@@ -40,20 +40,20 @@ func GetPicturePaths(id interface{}) []string {
 		return nil
 	}
 
-	return (&model.Picture{}).GetPaths(id)
+	return service.NewPictureService().GetPaths(id)
 }
 
 // 获取配置
 func GetConfig(key string) string {
-	return (&model.Config{}).GetValue(key)
+	return service.NewConfigService().GetValue(key)
 }
 
 // 获取域名
 func GetDomain() string {
 
 	http := ""
-	domain := (&model.Config{}).GetValue("WEB_SITE_DOMAIN")
-	ssl := (&model.Config{}).GetValue("SSL_OPEN")
+	domain := service.NewConfigService().GetValue("WEB_SITE_DOMAIN")
+	ssl := service.NewConfigService().GetValue("SSL_OPEN")
 	if domain != "" {
 		if ssl == "1" {
 			http = "https://"

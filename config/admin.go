@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/quarkcloudio/quark-go/v3/pkg/app/admin/component/action"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/action"
 )
 
 type AdminConfig struct {

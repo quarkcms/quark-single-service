@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
+	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 )
 
@@ -9,7 +9,7 @@ import (
 type AppMiddleware struct{}
 
 // 中间件
-func (am *AppMiddleware) Handle(ctx *builder.Context) error {
+func (am *AppMiddleware) Handle(ctx *quark.Context) error {
 	if config.App.Env == "demo" {
 		isForbiddenRoute := false
 		forbiddenRoutes := []string{
@@ -33,7 +33,7 @@ func (am *AppMiddleware) Handle(ctx *builder.Context) error {
 			}
 		}
 		if isForbiddenRoute {
-			return ctx.JSON(200, builder.Error("演示站点禁止了此操作！"))
+			return ctx.JSON(200, quark.Error("演示站点禁止了此操作！"))
 		}
 	}
 

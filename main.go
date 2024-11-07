@@ -5,19 +5,18 @@ import (
 	"os"
 
 	echomiddleware "github.com/labstack/echo/v4/middleware"
-	admininstall "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/install"
-	adminmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/middleware"
-	adminservice "github.com/quarkcloudio/quark-go/v3/pkg/app/admin/service"
-	miniappmiddleware "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/middleware"
-	miniappservice "github.com/quarkcloudio/quark-go/v3/pkg/app/miniapp/service"
-	"github.com/quarkcloudio/quark-go/v3/pkg/builder"
-	"github.com/quarkcloudio/quark-go/v3/pkg/utils/file"
+	"github.com/quarkcloudio/quark-go/v3"
+	adminservice "github.com/quarkcloudio/quark-go/v3/app/admin"
+	miniappservice "github.com/quarkcloudio/quark-go/v3/app/miniapp"
+	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
+	miniappmodule "github.com/quarkcloudio/quark-go/v3/template/miniapp"
+	"github.com/quarkcloudio/quark-go/v3/utils/file"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/quarkcloudio/quark-smart/v2/database"
-	appadminservice "github.com/quarkcloudio/quark-smart/v2/internal/admin/service"
+	appadminservice "github.com/quarkcloudio/quark-smart/v2/internal/app/admin"
+	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/app/tool"
 	"github.com/quarkcloudio/quark-smart/v2/internal/middleware"
 	"github.com/quarkcloudio/quark-smart/v2/internal/router"
-	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/tool/service"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -40,14 +39,14 @@ func main() {
 	)
 
 	// Redis配置信息
-	var redisConfig *builder.RedisConfig
+	var redisConfig *quark.RedisConfig
 
 	// 数据库配置信息
 	dsn := dbUser + ":" + dbPassword + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=" + dbCharset + "&parseTime=True&loc=Local"
 
 	// Redis配置信息
 	if config.Redis.Host != "" {
-		redisConfig = &builder.RedisConfig{
+		redisConfig = &quark.RedisConfig{
 			Host:     config.Redis.Host,
 			Password: config.Redis.Password,
 			Port:     config.Redis.Port,
@@ -68,9 +67,9 @@ func main() {
 	providers = append(providers, apptoolservice.Providers...)
 
 	// 配置资源
-	getConfig := &builder.Config{
+	getConfig := &quark.Config{
 		AppKey: appKey,
-		DBConfig: &builder.DBConfig{
+		DBConfig: &quark.DBConfig{
 			Dialector: mysql.Open(dsn),
 			Opts:      &gorm.Config{},
 		},
@@ -79,7 +78,7 @@ func main() {
 	}
 
 	// 实例化对象
-	b := builder.New(getConfig)
+	b := quark.New(getConfig)
 
 	// WEB根目录
 	b.Static("/", config.App.RootPath)
@@ -90,17 +89,17 @@ func main() {
 	// 避免每次重启都构建数据库
 	if !file.IsExist("install.lock") {
 		// 构建Admin数据库
-		admininstall.Handle()
+		adminmodule.Install()
 
 		// 构建本项目数据库
 		database.Handle()
 	}
 
 	// 管理后台中间件
-	b.Use(adminmiddleware.Handle)
+	b.Use(adminmodule.Middleware)
 
 	// MiniApp中间件
-	b.Use(miniappmiddleware.Handle)
+	b.Use(miniappmodule.Middleware)
 
 	// 本项目中间件
 	b.Use((&middleware.AppMiddleware{}).Handle)
