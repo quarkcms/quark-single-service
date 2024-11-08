@@ -248,7 +248,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	}
 
 	// 重写url
-	if driver == quark.LocalDriver {
+	if driver == quark.LocalStorage {
 		result.Url = service.NewPictureService().GetPath(result.Url)
 	}
 
@@ -304,7 +304,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		FieldByName("Driver").String()
 
 	// 重写url
-	if driver == quark.LocalDriver {
+	if driver == quark.LocalStorage {
 		result.Url = service.NewPictureService().GetPath(result.Url)
 	}
 

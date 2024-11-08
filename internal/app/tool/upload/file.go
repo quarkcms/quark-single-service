@@ -61,7 +61,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		FieldByName("Driver").String()
 
 	// 重写url
-	if driver == quark.LocalDriver {
+	if driver == quark.LocalStorage {
 		result.Url = service.NewFileService().GetPath(result.Url)
 	}
 
