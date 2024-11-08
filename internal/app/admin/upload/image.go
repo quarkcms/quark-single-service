@@ -13,6 +13,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/upload"
 	"github.com/quarkcloudio/quark-smart/v2/config"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/response"
 )
 
 type Image struct {
@@ -332,16 +333,16 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSON(200, message.Success("上传成功", "", map[string]interface{}{
-		"id":          id,
-		"contentType": result.ContentType,
-		"ext":         result.Ext,
-		"hash":        result.Hash,
-		"height":      result.Height,
-		"width":       result.Width,
-		"name":        result.Name,
-		"path":        result.Path,
-		"size":        result.Size,
-		"url":         result.Url,
+	return ctx.JSON(200, message.Success("上传成功", "", response.UploadImageResp{
+		Id:          id,
+		ContentType: result.ContentType,
+		Ext:         result.Ext,
+		Hash:        result.Hash,
+		Name:        result.Name,
+		Path:        result.Path,
+		Size:        result.Size,
+		Url:         result.Url,
+		Height:      result.Height,
+		Width:       result.Width,
 	}))
 }
