@@ -75,7 +75,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 插入数据库
 	id, err := service.NewFileService().InsertGetId(model.File{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,

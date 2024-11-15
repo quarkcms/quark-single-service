@@ -225,7 +225,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 	if fileInfo != nil {
 		// 更新数据库
 		service.NewPictureService().UpdateById(pictureInfo.Id, model.Picture{
-			ObjType: "ADMINID",
+			ObjType: "ADMIN",
 			ObjId:   adminInfo.Id,
 			Name:    fileInfo.Name,
 			Size:    fileInfo.Size,
@@ -255,7 +255,7 @@ func (p *Image) Crop(ctx *quark.Context) error {
 
 	// 更新数据库
 	service.NewPictureService().UpdateById(pictureInfo.Id, model.Picture{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,
@@ -316,7 +316,7 @@ func (p *Image) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 插入数据库
 	id, err := service.NewPictureService().InsertGetId(model.Picture{
-		ObjType: "ADMINID",
+		ObjType: "ADMIN",
 		ObjId:   adminInfo.Id,
 		Name:    result.Name,
 		Size:    result.Size,
