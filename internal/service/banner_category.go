@@ -19,7 +19,6 @@ func (p *BannerCategoryService) Options() (options []selectfield.Option, Error e
 	if err != nil {
 		return options, err
 	}
-
 	for _, v := range getList {
 		option := selectfield.Option{
 			Label: v.Title,
@@ -27,6 +26,5 @@ func (p *BannerCategoryService) Options() (options []selectfield.Option, Error e
 		}
 		options = append(options, option)
 	}
-
 	return options, nil
 }

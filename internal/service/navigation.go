@@ -14,17 +14,13 @@ func NewNavigationService() *NavigationService {
 
 // 获取TreeSelect组件数据
 func (p *NavigationService) TreeSelect(root bool) (list []treeselect.TreeData, Error error) {
-
-	// 是否有根节点
 	if root {
 		list = append(list, treeselect.TreeData{
 			Title: "根节点",
 			Value: 0,
 		})
 	}
-
 	list = append(list, p.FindTreeSelectNode(0)...)
-
 	return list, nil
 }
 
@@ -36,24 +32,19 @@ func (p *NavigationService) FindTreeSelectNode(pid int) (list []treeselect.TreeD
 		Order("sort asc,id asc").
 		Select("title", "id", "pid").
 		Find(&navigations)
-
 	if len(navigations) == 0 {
 		return list
 	}
-
 	for _, v := range navigations {
 		item := treeselect.TreeData{
 			Value: v.Id,
 			Title: v.Title,
 		}
-
 		children := p.FindTreeSelectNode(v.Id)
 		if len(children) > 0 {
 			item.Children = children
 		}
-
 		list = append(list, item)
 	}
-
 	return list
 }

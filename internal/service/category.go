@@ -14,13 +14,11 @@ func NewCategoryService() *CategoryService {
 // 获取菜单列表
 func (p *CategoryService) GetList() (categories []model.Category, Error error) {
 	list := []model.Category{}
-
 	err := db.Client.
 		Where("status = ?", 1).
 		Order("sort asc,id asc").
 		Select("title", "id", "pid").
 		Find(&list).Error
-
 	return list, err
 }
 
@@ -30,8 +28,6 @@ func (p *CategoryService) GetListWithRoot() (categories []model.Category, Error 
 	if err != nil {
 		return list, err
 	}
-
 	list = append(list, model.Category{Id: 0, Pid: -1, Title: "根节点"})
-
 	return list, err
 }
