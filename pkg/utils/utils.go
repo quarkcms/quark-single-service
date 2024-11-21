@@ -43,6 +43,11 @@ func GetPicturePaths(id interface{}) []string {
 	return service.NewPictureService().GetPaths(id)
 }
 
+// 设置配置
+func SetConfig(key string, value string) {
+	service.NewConfigService().SetValue(key, value)
+}
+
 // 获取配置
 func GetConfig(key string) string {
 	return service.NewConfigService().GetValue(key)
