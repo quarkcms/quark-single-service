@@ -96,7 +96,7 @@ var Admin = &AdminConfig{
 			SetStyle(map[string]interface{}{
 				"color": "rgb(0 0 0 / 88%)",
 			}).
-			SetHref("#/layout/index?api=/api/admin/account/setting/form").
+			SetHref("#/layout/index?api=/api/admin/account/form").
 			SetSize("small"),
 
 		action.
