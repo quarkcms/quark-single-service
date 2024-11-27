@@ -30,7 +30,7 @@ func (p *Article) Init(ctx *quark.Context) interface{} {
 	p.Model = &model.Post{}
 
 	// 分页
-	p.PerPage = 10
+	p.PageSize = 10
 
 	return p
 }

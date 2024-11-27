@@ -29,7 +29,7 @@ func (p *Page) Init(ctx *quark.Context) interface{} {
 	p.IndexQueryOrder = "id asc"
 
 	// 分页
-	p.PerPage = false
+	p.PageSize = false
 
 	return p
 }

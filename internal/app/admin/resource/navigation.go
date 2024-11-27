@@ -28,7 +28,7 @@ func (p *Navigation) Init(ctx *quark.Context) interface{} {
 	p.IndexQueryOrder = "sort asc"
 
 	// 分页
-	p.PerPage = false
+	p.PageSize = false
 
 	return p
 }
