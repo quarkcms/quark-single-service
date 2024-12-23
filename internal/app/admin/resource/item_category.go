@@ -5,11 +5,11 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/actions"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tabs"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-go/v3/utils/lister"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
+	"gorm.io/gorm"
 )
 
 type ItemCategory struct {
@@ -34,37 +34,25 @@ func (p *ItemCategory) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
-func (p *ItemCategory) Fields(ctx *quark.Context) []interface{} {
-	var tabPanes []interface{}
-
-	// 基础字段
-	basePane := (&tabs.TabPane{}).
-		Init().
-		SetTitle("基础").
-		SetBody(p.BaseFields(ctx))
-	tabPanes = append(tabPanes, basePane)
-
-	// 扩展字段
-	extendPane := (&tabs.TabPane{}).
-		Init().
-		SetTitle("扩展").
-		SetBody(p.ExtendFields(ctx))
-	tabPanes = append(tabPanes, extendPane)
-
-	return tabPanes
+// 全局查询
+func (p *ItemCategory) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	return query.Where("type = ?", "ITEM")
 }
 
-// 基础字段
-func (p *ItemCategory) BaseFields(ctx *quark.Context) []interface{} {
+func (p *ItemCategory) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	// 分类列表
-	categories, _ := service.NewCategoryService().GetListWithRoot()
+	categories, _ := service.NewCategoryService().GetListWithRoot("ITEM")
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
 		field.Hidden("pid", "父节点"),
+
+		field.Image("cover_id", "封面图").
+			SetMode("single").
+			OnlyOnForms(),
 
 		field.Text("title", "标题").
 			SetRules([]rule.Rule{
@@ -91,36 +79,6 @@ func (p *ItemCategory) BaseFields(ctx *quark.Context) []interface{} {
 			SetFalseValue("禁用").
 			SetDefault(true).
 			OnlyOnForms(),
-	}
-}
-
-// 扩展字段
-func (p *ItemCategory) ExtendFields(ctx *quark.Context) []interface{} {
-	field := &resource.Field{}
-
-	return []interface{}{
-		field.Image("cover_id", "封面图").
-			SetMode("single").
-			OnlyOnForms(),
-
-		field.Text("index_tpl", "频道模板").
-			OnlyOnForms(),
-
-		field.Text("lists_tpl", "列表模板").
-			OnlyOnForms(),
-
-		field.Text("detail_tpl", "详情模板").
-			OnlyOnForms(),
-
-		field.Number("page_num", "分页数量").
-			SetEditable(true).
-			SetDefault(10),
-
-		field.Switch("status", "状态").
-			SetEditable(true).
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetDefault(true),
 	}
 }
 

@@ -12,19 +12,20 @@ func NewCategoryService() *CategoryService {
 }
 
 // 获取菜单列表
-func (p *CategoryService) GetList() (categories []model.Category, Error error) {
+func (p *CategoryService) GetList(categoryType string) (categories []model.Category, err error) {
 	list := []model.Category{}
-	err := db.Client.
+	err = db.Client.
 		Where("status = ?", 1).
-		Order("sort asc,id asc").
+		Where("type = ?", categoryType).
+		Order("sort asc, id asc").
 		Select("title", "id", "pid").
 		Find(&list).Error
 	return list, err
 }
 
 // 获取菜单列表携带根节点
-func (p *CategoryService) GetListWithRoot() (categories []model.Category, Error error) {
-	list, err := p.GetList()
+func (p *CategoryService) GetListWithRoot(categoryType string) (categories []model.Category, err error) {
+	list, err := p.GetList(categoryType)
 	if err != nil {
 		return list, err
 	}

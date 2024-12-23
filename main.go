@@ -29,6 +29,7 @@ func main() {
 
 	// 配置信息
 	var (
+		appPro     = config.App.Pro
 		appKey     = config.App.Key
 		dbUser     = config.Mysql.Username
 		dbPassword = config.Mysql.Password
@@ -61,7 +62,12 @@ func main() {
 	providers = append(providers, miniappservice.Providers...)
 
 	// 加载自定义管理后台服务
-	providers = append(providers, appadminservice.Provider...)
+	providers = append(providers, appadminservice.Providers...)
+
+	// 加载自定义高级功能服务
+	if appPro {
+		providers = append(providers, appadminservice.ProProviders...)
+	}
 
 	// 加载自定义工具服务
 	providers = append(providers, apptoolservice.Providers...)
@@ -93,6 +99,11 @@ func main() {
 
 		// 构建本项目数据库
 		database.Handle()
+
+		// 构建高级功能数据库
+		if appPro {
+			database.ProHandle()
+		}
 	}
 
 	// 管理后台中间件

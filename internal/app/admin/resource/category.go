@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/utils/lister"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
+	"gorm.io/gorm"
 )
 
 type Category struct {
@@ -32,6 +33,11 @@ func (p *Category) Init(ctx *quark.Context) interface{} {
 	p.PageSize = false
 
 	return p
+}
+
+// 全局查询
+func (p *Category) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	return query.Where("type = ?", "ARTICLE")
 }
 
 func (p *Category) Fields(ctx *quark.Context) []interface{} {
@@ -59,7 +65,7 @@ func (p *Category) BaseFields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	// 分类列表
-	categories, _ := service.NewCategoryService().GetListWithRoot()
+	categories, _ := service.NewCategoryService().GetListWithRoot("ARTICLE")
 
 	return []interface{}{
 		field.Hidden("id", "ID"),

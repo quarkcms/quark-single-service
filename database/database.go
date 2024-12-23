@@ -23,11 +23,9 @@ func Handle() {
 	(&model.Banner{}).Seeder()
 	(&model.BannerCategory{}).Seeder()
 	(&model.Navigation{}).Seeder()
-
-	ProHandle()
 }
 
-// 商城高级功能
+// 高级功能
 func ProHandle() {
 	// 迁移数据
 	db.Client.AutoMigrate(

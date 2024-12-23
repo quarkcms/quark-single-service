@@ -11,6 +11,7 @@ type AppConfig struct {
 	Name                string   // 应用名称
 	Debug               bool     // 开启Debug模式
 	Recover             bool     // 崩溃后自动恢复
+	Pro                 bool     // 开启高级功能
 	Env                 string   // 项目环境
 	Host                string   // 服务地址
 	Key                 string   // 令牌加密key，如果设置绝对不可泄漏
@@ -41,6 +42,9 @@ var App = &AppConfig{
 
 	// 崩溃后自动恢复
 	Recover: true,
+
+	// 开启高级功能
+	Pro: env.Get("APP_PRO").(string) == "true",
 
 	// 项目环境
 	Env: env.Get("APP_ENV").(string),

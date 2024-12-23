@@ -65,7 +65,7 @@ func (p *Article) BaseFields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	// 分类列表
-	categories, _ := service.NewCategoryService().GetList()
+	categories, _ := service.NewCategoryService().GetList("ARTICLE")
 
 	return []interface{}{
 		field.ID("id", "ID"),
@@ -189,7 +189,7 @@ func (p *Article) ExtendFields(ctx *quark.Context) []interface{} {
 
 // 搜索
 func (p *Article) Searches(ctx *quark.Context) []interface{} {
-	options, _ := service.NewCategoryService().GetList()
+	options, _ := service.NewCategoryService().GetList("ARTICLE")
 
 	return []interface{}{
 		searches.Input("title", "标题"),

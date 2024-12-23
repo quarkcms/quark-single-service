@@ -9,7 +9,7 @@ import (
 )
 
 // 注册服务
-var Provider = []interface{}{
+var Providers = []interface{}{
 	&login.Index{},
 	&dashboard.Index{},
 	&layout.Index{},
@@ -21,4 +21,9 @@ var Provider = []interface{}{
 	&resource.Navigation{},
 	&upload.File{},
 	&upload.Image{},
+}
+
+// 注册高级功能服务
+var ProProviders = []interface{}{
+	&resource.ItemCategory{},
 }
