@@ -23,6 +23,8 @@ func Handle() {
 	(&model.Banner{}).Seeder()
 	(&model.BannerCategory{}).Seeder()
 	(&model.Navigation{}).Seeder()
+
+	ProHandle()
 }
 
 // 商城高级功能
