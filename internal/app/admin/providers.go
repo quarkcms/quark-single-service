@@ -25,5 +25,11 @@ var Providers = []interface{}{
 
 // 注册高级功能服务
 var ProProviders = []interface{}{
+	&resource.Item{},
 	&resource.ItemCategory{},
+	&resource.Order{},
+	&resource.RefundOrder{},
+	&resource.VerifyOrder{},
+	&resource.Bill{},
+	&resource.BillRecord{},
 }
