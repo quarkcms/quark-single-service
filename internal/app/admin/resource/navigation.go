@@ -6,7 +6,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
-	"github.com/quarkcloudio/quark-go/v3/utils/lister"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 )
@@ -26,6 +25,9 @@ func (p *Navigation) Init(ctx *quark.Context) interface{} {
 
 	// 默认排序
 	p.IndexQueryOrder = "sort asc"
+
+	// 树形表格
+	p.TableListToTree = true
 
 	// 分页
 	p.PageSize = false
@@ -96,22 +98,4 @@ func (p *Navigation) Actions(ctx *quark.Context) []interface{} {
 		actions.FormBack(),
 		actions.FormExtraBack(),
 	}
-}
-
-// 列表页面显示前回调
-func (p *Navigation) BeforeIndexShowing(ctx *quark.Context, list []map[string]interface{}) []interface{} {
-	data := ctx.AllQuerys()
-	if search, ok := data["search"].(map[string]interface{}); ok && search != nil {
-		result := []interface{}{}
-		for _, v := range list {
-			result = append(result, v)
-		}
-
-		return result
-	}
-
-	// 转换成树形表格
-	tree, _ := lister.ListToTree(list, "id", "pid", "children", 0)
-
-	return tree
 }

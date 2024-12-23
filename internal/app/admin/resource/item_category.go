@@ -6,7 +6,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
-	"github.com/quarkcloudio/quark-go/v3/utils/lister"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"gorm.io/gorm"
@@ -27,6 +26,9 @@ func (p *ItemCategory) Init(ctx *quark.Context) interface{} {
 
 	// 默认排序
 	p.IndexQueryOrder = "sort asc"
+
+	// 树形表格
+	p.TableListToTree = true
 
 	// 分页
 	p.PageSize = false
@@ -50,9 +52,7 @@ func (p *ItemCategory) Fields(ctx *quark.Context) []interface{} {
 
 		field.Hidden("pid", "父节点"),
 
-		field.Image("cover_id", "封面图").
-			SetMode("single").
-			OnlyOnForms(),
+		field.Hidden("type", "类型").SetDefault("ITEM"),
 
 		field.Text("title", "标题").
 			SetRules([]rule.Rule{
@@ -63,6 +63,10 @@ func (p *ItemCategory) Fields(ctx *quark.Context) []interface{} {
 			SetRules([]rule.Rule{
 				rule.Required("缩略名必须填写"),
 			}),
+
+		field.Image("cover_id", "封面图").
+			SetMode("single").
+			OnlyOnForms(),
 
 		field.TreeSelect("pid", "父节点").
 			SetTreeData(categories, -1, "pid", "title", "id").
@@ -105,22 +109,4 @@ func (p *ItemCategory) Actions(ctx *quark.Context) []interface{} {
 		actions.FormBack(),
 		actions.FormExtraBack(),
 	}
-}
-
-// 列表页面显示前回调
-func (p *ItemCategory) BeforeIndexShowing(ctx *quark.Context, list []map[string]interface{}) []interface{} {
-	data := ctx.AllQuerys()
-	if search, ok := data["search"].(map[string]interface{}); ok && search != nil {
-		result := []interface{}{}
-		for _, v := range list {
-			result = append(result, v)
-		}
-
-		return result
-	}
-
-	// 转换成树形表格
-	tree, _ := lister.ListToTree(list, "id", "pid", "children", 0)
-
-	return tree
 }
