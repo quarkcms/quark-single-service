@@ -6,9 +6,9 @@ import (
 
 // Order 定义订单表的结构体
 type Order struct {
-	ID                     uint              `json:"id" gorm:"primaryKey;autoIncrement;comment:'订单ID'"`                             // 订单ID
-	OrderID                string            `json:"order_id" gorm:"not null;uniqueIndex;comment:'订单号'"`                            // 订单号
-	UID                    uint              `json:"uid" gorm:"not null;comment:'用户id';index:uid"`                                  // 用户id
+	Id                     uint              `json:"id" gorm:"primaryKey;autoIncrement;comment:'订单ID'"`                             // 订单ID
+	OrderId                string            `json:"order_id" gorm:"not null;uniqueIndex;comment:'订单号'"`                            // 订单号
+	Uid                    uint              `json:"uid" gorm:"not null;comment:'用户id';index:uid"`                                  // 用户id
 	Realname               string            `json:"realname" gorm:"not null;comment:'用户姓名'"`                                       // 用户姓名
 	UserPhone              string            `json:"user_phone" gorm:"not null;comment:'用户电话'"`                                     // 用户电话
 	UserAddress            string            `json:"user_address" gorm:"not null;comment:'详细地址'"`                                   // 详细地址
@@ -27,18 +27,13 @@ type Order struct {
 	RefundReasonTime       datetime.Datetime `json:"refund_reason_time" gorm:"comment:'退款时间'"`                                      // 退款时间
 	RefundPrice            float64           `json:"refund_price" gorm:"not null;default:0.00;comment:'退款金额'"`                      // 退款金额
 	Remark                 string            `json:"remark" gorm:"comment:'管理员备注'"`                                                 // 管理员备注
-	MerID                  uint              `json:"mer_id" gorm:"not null;default:0;comment:'商户ID'"`                               // 商户ID
+	MerId                  uint              `json:"mer_id" gorm:"not null;default:0;comment:'商户ID'"`                               // 商户ID
 	IsMerCheck             uint8             `json:"is_mer_check" gorm:"not null;default:0"`                                        // 是否商户审核
 	Cost                   float64           `json:"cost" gorm:"not null;comment:'成本价'"`                                            // 成本价
 	VerifyCode             string            `json:"verify_code" gorm:"not null;default:'';comment:'核销码'"`                          // 核销码
 	ShippingType           uint8             `json:"shipping_type" gorm:"not null;default:1;comment:'配送方式 1=快递 ，2=门店自提'"`           // 配送方式
-	ClerkID                uint              `json:"clerk_id" gorm:"not null;default:0;comment:'店员id/核销员id'"`                       // 店员id/核销员id
+	ClerkId                uint              `json:"clerk_id" gorm:"not null;default:0;comment:'店员id/核销员id'"`                       // 店员id/核销员id
 	OutTradeNo             string            `json:"out_trade_no" gorm:"comment:'商户系统内部的订单号,32个字符内、可包含字母'"`                         // 商户系统内部的订单号
 	CreatedAt              datetime.Datetime `json:"created_at"`
 	UpdatedAt              datetime.Datetime `json:"updated_at"` // 记录更新时间
-}
-
-// Seeder
-func (m *Order) Seeder() {
-
 }

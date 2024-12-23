@@ -4,9 +4,9 @@ import "github.com/quarkcloudio/quark-go/v3/utils/datetime"
 
 // UserBill 定义用户账单表的结构体
 type UserBill struct {
-	ID        uint              `json:"id" gorm:"primaryKey;autoIncrement;comment:'用户账单id'"`               // 用户账单id
-	UID       uint              `json:"uid" gorm:"not null;default:0;comment:'用户uid';index:openid"`        // 用户uid
-	LinkID    string            `json:"link_id" gorm:"not null;default:'0';comment:'关联id'"`                // 关联id
+	Id        uint              `json:"id" gorm:"primaryKey;autoIncrement;comment:'用户账单id'"`               // 用户账单id
+	Uid       uint              `json:"uid" gorm:"not null;default:0;comment:'用户uid';index:openid"`        // 用户uid
+	LinkId    string            `json:"link_id" gorm:"not null;default:'0';comment:'关联id'"`                // 关联id
 	PM        uint8             `json:"pm" gorm:"not null;default:0;comment:'0 = 支出 1 = 获得'"`              // 0 = 支出 1 = 获得
 	Title     string            `json:"title" gorm:"not null;default:'';comment:'账单标题'"`                   // 账单标题
 	Category  string            `json:"category" gorm:"not null;default:'';comment:'明细种类'"`                // 明细种类
@@ -17,9 +17,4 @@ type UserBill struct {
 	Status    int8              `json:"status" gorm:"not null;default:1;comment:'0 = 带确定 1 = 有效 -1 = 无效'"` // 0 = 带确定 1 = 有效 -1 = 无效
 	CreatedAt datetime.Datetime `json:"created_at"`
 	UpdatedAt datetime.Datetime `json:"updated_at"` // 记录更新时间
-}
-
-// Seeder
-func (m *UserBill) Seeder() {
-
 }
