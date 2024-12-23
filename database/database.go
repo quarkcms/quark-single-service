@@ -24,3 +24,19 @@ func Handle() {
 	(&model.BannerCategory{}).Seeder()
 	(&model.Navigation{}).Seeder()
 }
+
+// 开启高级功能
+func ProHandle() {
+	// 迁移数据
+	db.Client.AutoMigrate(
+		&model.Item{},
+		&model.ItemAttr{},
+		&model.ItemAttrValue{},
+		&model.ItemAttrResult{},
+		&model.ItemCategory{},
+		&model.Order{},
+		&model.OrderDetail{},
+		&model.OrderStatus{},
+		&model.UserBill{},
+	)
+}
