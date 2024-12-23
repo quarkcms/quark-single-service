@@ -1,6 +1,11 @@
 package model
 
-import "github.com/quarkcloudio/quark-go/v3/utils/datetime"
+import (
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
+)
 
 // UserBill 定义用户账单表的结构体
 type UserBill struct {
@@ -17,4 +22,21 @@ type UserBill struct {
 	Status    int8              `json:"status" gorm:"not null;default:1;comment:'0 = 带确定 1 = 有效 -1 = 无效'"` // 0 = 带确定 1 = 有效 -1 = 无效
 	CreatedAt datetime.Datetime `json:"created_at"`
 	UpdatedAt datetime.Datetime `json:"updated_at"` // 记录更新时间
+}
+
+// Seeder
+func (m *UserBill) Seeder() {
+
+	// 如果菜单已存在，不执行Seeder操作
+	if service.NewMenuService().IsExist(97) {
+		return
+	}
+
+	// 创建菜单
+	menuSeeders := []*appmodel.Menu{
+		{Id: 97, Name: "财务管理", GuardName: "admin", Icon: "icon-moneycollect", Type: 1, Pid: 0, Sort: 0, Path: "/bill", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
+		{Id: 98, Name: "资金流水", GuardName: "admin", Icon: "", Type: 2, Pid: 97, Sort: 0, Path: "/api/admin/bill/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 99, Name: "账单记录", GuardName: "admin", Icon: "", Type: 2, Pid: 97, Sort: 0, Path: "/api/admin/billRecord/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+	}
+	db.Client.Create(&menuSeeders)
 }

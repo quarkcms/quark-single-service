@@ -1,6 +1,9 @@
 package model
 
 import (
+	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	appmodel "github.com/quarkcloudio/quark-go/v3/model"
+	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"gorm.io/gorm"
 )
@@ -19,7 +22,7 @@ type Item struct {
 	Sort        int16             `json:"sort" gorm:"not null;default:0;comment:'排序'"`
 	Sales       uint              `json:"sales" gorm:"not null;default:0;comment:'销量'"`
 	Stock       uint              `json:"stock" gorm:"not null;default:0;comment:'库存'"`
-	Status      uint8             `json:"status" gorm:"not null;default:1;comment:'状态（0：未上架，1：上架）'"`
+	Status      uint8             `json:"status" gorm:"not null;default:1;comment:'状态(0:未上架,1:上架)'"`
 	Cost        float64           `json:"cost" gorm:"not null;type:decimal(8,2);default:0.00;comment:'成本价'"`
 	Ficti       int               `json:"ficti" gorm:"default:100;comment:'虚拟销量'"`
 	Views       int               `json:"views" gorm:"default:0;comment:'浏览量'"`
@@ -28,4 +31,21 @@ type Item struct {
 	CreatedAt   datetime.Datetime `json:"created_at"`
 	UpdatedAt   datetime.Datetime `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt    `json:"deleted_at"`
+}
+
+// Seeder
+func (m *Item) Seeder() {
+
+	// 如果菜单已存在，不执行Seeder操作
+	if service.NewMenuService().IsExist(90) {
+		return
+	}
+
+	// 创建菜单
+	menuSeeders := []*appmodel.Menu{
+		{Id: 90, Name: "商品管理", GuardName: "admin", Icon: "icon-shop", Type: 1, Pid: 0, Sort: 0, Path: "/item", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
+		{Id: 91, Name: "商品列表", GuardName: "admin", Icon: "", Type: 2, Pid: 90, Sort: 0, Path: "/api/admin/item/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+		{Id: 92, Name: "商品分类", GuardName: "admin", Icon: "", Type: 2, Pid: 90, Sort: 0, Path: "/api/admin/itemCategory/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
+	}
+	db.Client.Create(&menuSeeders)
 }

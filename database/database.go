@@ -25,7 +25,7 @@ func Handle() {
 	(&model.Navigation{}).Seeder()
 }
 
-// 开启高级功能
+// 商城高级功能
 func ProHandle() {
 	// 迁移数据
 	db.Client.AutoMigrate(
@@ -39,4 +39,9 @@ func ProHandle() {
 		&model.OrderStatus{},
 		&model.UserBill{},
 	)
+
+	// 数据填充
+	(&model.Item{}).Seeder()
+	(&model.Order{}).Seeder()
+	(&model.UserBill{}).Seeder()
 }
