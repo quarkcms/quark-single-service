@@ -34,19 +34,10 @@ func (p *Item) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
-		field.Text("title", "标题").
+		field.Text("name", "商品名称").
 			SetRules([]rule.Rule{
 				rule.Required("标题必须填写"),
 			}),
-
-		field.Text("name", "缩略名").
-			SetRules([]rule.Rule{
-				rule.Required("缩略名必须填写"),
-			}),
-
-		field.Image("cover_id", "封面图").
-			SetMode("single").
-			OnlyOnForms(),
 
 		field.TextArea("description", "描述").
 			OnlyOnForms(),
@@ -55,8 +46,8 @@ func (p *Item) Fields(ctx *quark.Context) []interface{} {
 			SetEditable(true),
 
 		field.Switch("status", "状态").
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
+			SetTrueValue("上架").
+			SetFalseValue("下架").
 			SetDefault(true).
 			OnlyOnForms(),
 	}
@@ -65,7 +56,7 @@ func (p *Item) Fields(ctx *quark.Context) []interface{} {
 // 搜索
 func (p *Item) Searches(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		searches.Input("title", "标题"),
+		searches.Input("name", "商品名称"),
 		searches.Status(),
 		searches.DatetimeRange("created_at", "创建时间"),
 	}
