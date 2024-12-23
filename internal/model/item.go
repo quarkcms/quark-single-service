@@ -14,8 +14,9 @@ type Item struct {
 	Image       string            `json:"image" gorm:"not null;size:256;comment:商品图片"`
 	SliderImage string            `json:"slider_image" gorm:"not null;size:2000;comment:轮播图"`
 	Name        string            `json:"name" gorm:"not null;size:128;comment:商品名称"`
-	Info        string            `json:"info" gorm:"not null;size:256;comment:商品简介"`
 	Keyword     string            `json:"keyword" gorm:"not null;size:256;comment:关键字"`
+	Description string            `json:"description" gorm:"not null;size:256;comment:商品简介"`
+	Content     string            `json:"content" gorm:"type:text;default:null;comment:商品详情"`
 	CategoryIds string            `json:"category_ids" gorm:"not null;size:64;comment:分类ids"`
 	Price       float64           `json:"price" gorm:"not null;type:decimal(8,2);default:0.00;comment:商品价格"`
 	OtPrice     float64           `json:"ot_price" gorm:"not null;type:decimal(8,2);default:0.00;comment:市场价"`
