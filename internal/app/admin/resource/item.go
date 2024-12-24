@@ -38,42 +38,42 @@ func (p *Item) Fields(ctx *quark.Context) []interface{} {
 	pane1 := (&tabs.TabPane{}).
 		Init().
 		SetTitle("基础信息").
-		SetBody(p.BaseFields(ctx))
+		SetBody(p.Field1(ctx))
 	tabPanes = append(tabPanes, pane1)
 
 	// 规格库存
 	pane2 := (&tabs.TabPane{}).
 		Init().
 		SetTitle("规格库存").
-		SetBody(p.ExtendFields(ctx))
+		SetBody(p.Field2(ctx))
 	tabPanes = append(tabPanes, pane2)
 
 	// 商品详情
 	pane3 := (&tabs.TabPane{}).
 		Init().
 		SetTitle("商品详情").
-		SetBody(p.ExtendFields(ctx))
+		SetBody(p.Field3(ctx))
 	tabPanes = append(tabPanes, pane3)
 
 	// 营销设置
 	pane4 := (&tabs.TabPane{}).
 		Init().
 		SetTitle("营销设置").
-		SetBody(p.ExtendFields(ctx))
+		SetBody(p.Field4(ctx))
 	tabPanes = append(tabPanes, pane4)
 
 	// 其他设置
 	pane5 := (&tabs.TabPane{}).
 		Init().
 		SetTitle("其他设置").
-		SetBody(p.ExtendFields(ctx))
+		SetBody(p.Field5(ctx))
 	tabPanes = append(tabPanes, pane5)
 
 	return tabPanes
 }
 
 // 基础字段
-func (p *Item) BaseFields(ctx *quark.Context) []interface{} {
+func (p *Item) Field1(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	treeData, _ := service.NewCategoryService().GetList("ITEM")
@@ -113,21 +113,66 @@ func (p *Item) BaseFields(ctx *quark.Context) []interface{} {
 	}
 }
 
-// 扩展字段
-func (p *Item) ExtendFields(ctx *quark.Context) []interface{} {
+// 规格库存字段
+func (p *Item) Field2(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	return []interface{}{
 
-		field.Number("page_num", "分页数量").
-			SetEditable(true).
-			SetDefault(10),
+		field.Radio("spec_type", "规格类型").
+			SetOptions([]radio.Option{
+				field.RadioOption("单规格", 0),
+				field.RadioOption("多规格", 1),
+			}).
+			SetDefault(0).
+			SetWhen(0, func() interface{} {
+				return []interface{}{
+					field.Image("image", "图片").OnlyOnForms(),
+					field.Number("price", "售价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
+					field.Number("cost", "成本价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
+					field.Number("ot_price", "划线价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
+					field.Number("stock", "库存").SetAddonAfter("件").SetDefault(0).OnlyOnForms(),
+				}
+			}).
+			OnlyOnForms(),
+	}
+}
 
-		field.Switch("status", "状态").
-			SetEditable(true).
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetDefault(true),
+// 商品详情
+func (p *Item) Field3(ctx *quark.Context) []interface{} {
+	field := &resource.Field{}
+
+	return []interface{}{
+
+		field.Editor("content", "商品详情").OnlyOnForms(),
+	}
+}
+
+// 营销设置
+func (p *Item) Field4(ctx *quark.Context) []interface{} {
+	field := &resource.Field{}
+
+	return []interface{}{
+
+		field.Number("ficti", "已售数量").SetAddonAfter("件").SetDefault(0).OnlyOnForms(),
+		field.Number("sort", "排序").SetDefault(0).OnlyOnForms(),
+	}
+}
+
+// 其他设置
+func (p *Item) Field5(ctx *quark.Context) []interface{} {
+	field := &resource.Field{}
+
+	return []interface{}{
+
+		field.Text("keyword", "关键词").
+			OnlyOnForms(),
+
+		field.TextArea("info", "简介").
+			SetRules([]rule.Rule{
+				rule.Max(200, "描述不能超过200个字符"),
+			}).
+			OnlyOnForms(),
 	}
 }
 
@@ -150,8 +195,6 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 		actions.EditLink(),
 		actions.Delete(),
 		actions.FormSubmit(),
-		actions.FormReset(),
-		actions.FormBack(),
 		actions.FormExtraBack(),
 	}
 }
