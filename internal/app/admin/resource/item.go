@@ -127,11 +127,31 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			SetDefault(0).
 			SetWhen(0, func() interface{} {
 				return []interface{}{
-					field.Image("image", "图片").OnlyOnForms(),
-					field.Number("price", "售价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
-					field.Number("cost", "成本价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
-					field.Number("ot_price", "划线价").SetPrecision(2).SetAddonAfter("元").SetDefault(0.00).OnlyOnForms(),
-					field.Number("stock", "库存").SetAddonAfter("件").SetDefault(0).OnlyOnForms(),
+					field.Image("image", "图片").
+						OnlyOnForms(),
+
+					field.Number("price", "售价").
+						SetPrecision(2).
+						SetAddonAfter("元").
+						SetDefault(0.00).
+						OnlyOnForms(),
+
+					field.Number("cost", "成本价").
+						SetPrecision(2).
+						SetAddonAfter("元").
+						SetDefault(0.00).
+						OnlyOnForms(),
+
+					field.Number("ot_price", "划线价").
+						SetPrecision(2).
+						SetAddonAfter("元").
+						SetDefault(0.00).
+						OnlyOnForms(),
+
+					field.Number("stock", "库存").
+						SetAddonAfter("件").
+						SetDefault(0).
+						OnlyOnForms(),
 				}
 			}).
 			OnlyOnForms(),
@@ -144,7 +164,8 @@ func (p *Item) Field3(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 
-		field.Editor("content", "商品详情").OnlyOnForms(),
+		field.Editor("content", "商品详情").
+			OnlyOnForms(),
 	}
 }
 
@@ -154,8 +175,18 @@ func (p *Item) Field4(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 
-		field.Number("ficti", "已售数量").SetAddonAfter("件").SetDefault(0).OnlyOnForms(),
-		field.Number("sort", "排序").SetDefault(0).OnlyOnForms(),
+		field.Number("views", "浏览量").
+			SetDefault(0).
+			OnlyOnForms(),
+
+		field.Number("ficti", "已售数量").
+			SetAddonAfter("件").
+			SetDefault(0).
+			OnlyOnForms(),
+
+		field.Number("sort", "排序").
+			SetDefault(0).
+			OnlyOnForms(),
 	}
 }
 
