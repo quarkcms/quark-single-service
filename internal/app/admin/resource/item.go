@@ -4,9 +4,12 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/actions"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/fields/radio"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tabs"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
+	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 )
 
 type Item struct {
@@ -29,27 +32,102 @@ func (p *Item) Init(ctx *quark.Context) interface{} {
 }
 
 func (p *Item) Fields(ctx *quark.Context) []interface{} {
+	var tabPanes []interface{}
+
+	// 基础信息
+	pane1 := (&tabs.TabPane{}).
+		Init().
+		SetTitle("基础信息").
+		SetBody(p.BaseFields(ctx))
+	tabPanes = append(tabPanes, pane1)
+
+	// 规格库存
+	pane2 := (&tabs.TabPane{}).
+		Init().
+		SetTitle("规格库存").
+		SetBody(p.ExtendFields(ctx))
+	tabPanes = append(tabPanes, pane2)
+
+	// 商品详情
+	pane3 := (&tabs.TabPane{}).
+		Init().
+		SetTitle("商品详情").
+		SetBody(p.ExtendFields(ctx))
+	tabPanes = append(tabPanes, pane3)
+
+	// 营销设置
+	pane4 := (&tabs.TabPane{}).
+		Init().
+		SetTitle("营销设置").
+		SetBody(p.ExtendFields(ctx))
+	tabPanes = append(tabPanes, pane4)
+
+	// 其他设置
+	pane5 := (&tabs.TabPane{}).
+		Init().
+		SetTitle("其他设置").
+		SetBody(p.ExtendFields(ctx))
+	tabPanes = append(tabPanes, pane5)
+
+	return tabPanes
+}
+
+// 基础字段
+func (p *Item) BaseFields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
+
+	treeData, _ := service.NewCategoryService().GetList("ITEM")
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
 		field.Text("name", "商品名称").
 			SetRules([]rule.Rule{
-				rule.Required("标题必须填写"),
+				rule.Required("商品名称必须填写"),
 			}),
 
-		field.TextArea("description", "描述").
+		field.Image("slider_image", "商品轮播图").
+			SetMode("multiple").
+			SetLimitNum(10).
+			SetRules([]rule.Rule{
+				rule.Required("请上传商品轮播图"),
+			}).
+			SetHelp("建议尺寸：800*800，默认首张图为主图，最多上传10张").
 			OnlyOnForms(),
 
-		field.Number("sort", "排序").
-			SetEditable(true),
+		field.TreeSelect("category_ids", "商品分类").
+			SetTreeData(treeData, "pid", "title", "id").
+			SetMultiple(true).
+			SetRules([]rule.Rule{
+				rule.Required("请选择商品分类"),
+			}).
+			OnlyOnForms(),
+
+		field.Radio("status", "商品状态").
+			SetOptions([]radio.Option{
+				field.RadioOption("上架", 1),
+				field.RadioOption("下架", 0),
+			}).
+			SetDefault(1).
+			OnlyOnForms(),
+	}
+}
+
+// 扩展字段
+func (p *Item) ExtendFields(ctx *quark.Context) []interface{} {
+	field := &resource.Field{}
+
+	return []interface{}{
+
+		field.Number("page_num", "分页数量").
+			SetEditable(true).
+			SetDefault(10),
 
 		field.Switch("status", "状态").
-			SetTrueValue("上架").
-			SetFalseValue("下架").
-			SetDefault(true).
-			OnlyOnForms(),
+			SetEditable(true).
+			SetTrueValue("正常").
+			SetFalseValue("禁用").
+			SetDefault(true),
 	}
 }
 
