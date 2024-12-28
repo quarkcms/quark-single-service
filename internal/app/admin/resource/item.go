@@ -225,7 +225,7 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 		actions.BatchEnable(),
 		actions.EditLink(),
 		actions.Delete(),
-		actions.FormStep(),
+		//actions.FormStep(),
 		actions.FormSubmit(),
 		actions.FormExtraBack(),
 	}
