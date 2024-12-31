@@ -158,15 +158,20 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 				return []interface{}{
 					field.Sku("attributes", "datasource", "商品规格", "商品属性").
 						SetFields([]interface{}{
-							field.ImagePicker("image", "图片").SetColumnWidth(140),
+							field.ImagePicker("image", "图片").
+								SetColumnWidth(140),
 
-							field.Number("price", "售价").SetColumnWidth(120),
+							field.Number("price", "售价").
+								SetColumnWidth(120),
 
-							field.Number("cost", "成本价").SetColumnWidth(120),
+							field.Number("cost", "成本价").
+								SetColumnWidth(120),
 
-							field.Number("ot_price", "划线价").SetColumnWidth(120),
+							field.Number("ot_price", "划线价").
+								SetColumnWidth(120),
 
-							field.Number("stock", "库存").SetColumnWidth(120),
+							field.Number("stock", "库存").
+								SetColumnWidth(120),
 						}).
 						OnlyOnForms(),
 				}
