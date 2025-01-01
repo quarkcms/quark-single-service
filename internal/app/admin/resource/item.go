@@ -86,13 +86,13 @@ func (p *Item) Field1(ctx *quark.Context) []interface{} {
 				rule.Required("商品名称必须填写"),
 			}),
 
-		field.Image("slider_image", "商品轮播图").
+		field.ImagePicker("slider_image", "商品轮播图").
 			SetMode("multiple").
 			SetLimitNum(10).
 			SetRules([]rule.Rule{
 				rule.Required("请上传商品轮播图"),
 			}).
-			SetHelp("建议尺寸：800*800，默认首张图为主图，最多上传10张").
+			SetHelp("建议尺寸：800*800，默认首张图为主图，支持拖拽排序，最多上传10张").
 			OnlyOnForms(),
 
 		field.TreeSelect("category_ids", "商品分类").
@@ -127,7 +127,7 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			SetDefault(0).
 			SetWhen(0, func() interface{} {
 				return []interface{}{
-					field.Image("image", "图片").
+					field.ImagePicker("image", "图片").
 						OnlyOnForms(),
 
 					field.Number("price", "售价").
