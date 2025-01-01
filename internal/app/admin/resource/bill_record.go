@@ -3,7 +3,6 @@ package resource
 import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 )
@@ -31,33 +30,17 @@ func (p *BillRecord) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.ID("id", "ID"),
 
-		field.Text("title", "标题").
-			SetRules([]rule.Rule{
-				rule.Required("标题必须填写"),
-			}),
+		field.Text("bill_no", "标题"),
 
-		field.Text("name", "缩略名").
-			SetRules([]rule.Rule{
-				rule.Required("缩略名必须填写"),
-			}),
+		field.Text("order_no", "日期"),
 
-		field.Image("cover_id", "封面图").
-			SetMode("single").
-			OnlyOnForms(),
+		field.Text("created_at", "收入金额"),
 
-		field.TextArea("description", "描述").
-			OnlyOnForms(),
+		field.Text("created_at", "支出金额"),
 
-		field.Number("sort", "排序").
-			SetEditable(true),
-
-		field.Switch("status", "状态").
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetDefault(true).
-			OnlyOnForms(),
+		field.Text("created_at", "入账金额"),
 	}
 }
 

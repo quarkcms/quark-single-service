@@ -3,7 +3,6 @@ package resource
 import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 )
@@ -33,31 +32,23 @@ func (p *RefundOrder) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
-		field.Text("title", "标题").
-			SetRules([]rule.Rule{
-				rule.Required("标题必须填写"),
-			}),
+		field.Text("refund_no", "退款单号"),
 
-		field.Text("name", "缩略名").
-			SetRules([]rule.Rule{
-				rule.Required("缩略名必须填写"),
-			}),
+		field.Text("order_no", "原订单号"),
 
-		field.Image("cover_id", "封面图").
-			SetMode("single").
-			OnlyOnForms(),
+		field.Text("item_info", "商品信息"),
 
-		field.TextArea("description", "描述").
-			OnlyOnForms(),
+		field.Text("user_info", "用户信息"),
 
-		field.Number("sort", "排序").
-			SetEditable(true),
+		field.Text("total_pay", "支付金额"),
 
-		field.Switch("status", "状态").
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetDefault(true).
-			OnlyOnForms(),
+		field.Text("refund_at", "发起退款时间"),
+
+		field.Text("status", "退款状态"),
+
+		field.Text("order_status", "订单状态"),
+
+		field.Text("refund_info", "退款信息"),
 	}
 }
 
