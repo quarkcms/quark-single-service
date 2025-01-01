@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
 
 type Item struct {
@@ -79,7 +80,7 @@ func (p *Item) Field1(ctx *quark.Context) []interface{} {
 	treeData, _ := service.NewCategoryService().GetList("ITEM")
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.ID("id", "ID"),
 
 		field.Text("name", "商品名称").
 			SetRules([]rule.Rule{
@@ -127,14 +128,14 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			SetDefault(0).
 			SetWhen(0, func() interface{} {
 				return []interface{}{
-					field.ImagePicker("image", "图片").
-						OnlyOnForms(),
+					field.ImagePicker("image", "图片", func() interface{} {
+						return "<img src='" + utils.GetPicturePath(p.Field["id"]) + "' width=50 height=50 />"
+					}),
 
 					field.Number("price", "售价").
 						SetPrecision(2).
 						SetAddonAfter("元").
-						SetDefault(0.00).
-						OnlyOnForms(),
+						SetDefault(0.00),
 
 					field.Number("cost", "成本价").
 						SetPrecision(2).
@@ -150,8 +151,7 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 
 					field.Number("stock", "库存").
 						SetAddonAfter("件").
-						SetDefault(0).
-						OnlyOnForms(),
+						SetDefault(0),
 				}
 			}).
 			SetWhen(1, func() interface{} {
@@ -203,12 +203,10 @@ func (p *Item) Field4(ctx *quark.Context) []interface{} {
 
 		field.Number("ficti", "已售数量").
 			SetAddonAfter("件").
-			SetDefault(0).
-			OnlyOnForms(),
+			SetDefault(0),
 
 		field.Number("sort", "排序").
-			SetDefault(0).
-			OnlyOnForms(),
+			SetDefault(0),
 	}
 }
 
