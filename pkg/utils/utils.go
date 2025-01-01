@@ -12,8 +12,7 @@ func GetFilePath(id interface{}) string {
 	if id == nil {
 		return ""
 	}
-
-	return service.NewFileService().GetPath(id)
+	return service.NewAttachmentService().GetFilePath(id)
 }
 
 // 获取多文件路径
@@ -21,26 +20,23 @@ func GetFilePaths(id interface{}) []string {
 	if id == nil {
 		return nil
 	}
-
-	return service.NewFileService().GetPaths(id)
+	return service.NewAttachmentService().GetPaths(id)
 }
 
 // 获取图片路径
-func GetPicturePath(id interface{}) string {
+func GetImagePath(id interface{}) string {
 	if id == nil {
 		return ""
 	}
-
-	return service.NewPictureService().GetPath(id)
+	return service.NewAttachmentService().GetImagePath(id)
 }
 
 // 获取多图片路径
-func GetPicturePaths(id interface{}) []string {
+func GetImagePaths(id interface{}) []string {
 	if id == nil {
 		return nil
 	}
-
-	return service.NewPictureService().GetPaths(id)
+	return service.NewAttachmentService().GetPaths(id)
 }
 
 // 设置配置
@@ -55,26 +51,21 @@ func GetConfig(key string) string {
 
 // 获取域名
 func GetDomain() string {
-
-	http := ""
 	domain := service.NewConfigService().GetValue("WEB_SITE_DOMAIN")
 	ssl := service.NewConfigService().GetValue("SSL_OPEN")
+	http := ""
 	if domain != "" {
+		http = "http://"
 		if ssl == "1" {
 			http = "https://"
-		} else {
-			http = "http://"
 		}
 	}
-
 	return http + domain
 }
 
 // 内容中的地址替换
 func ReplaceContentSrc(content string) string {
-
 	reg := regexp.MustCompile(`src="(/[^"]*)"`)
-
 	return reg.ReplaceAllStringFunc(content, func(src string) string {
 		return "src= \"" + GetDomain() + src[strings.Index(src, "\"")+1:] + "\""
 	})
@@ -84,11 +75,9 @@ func ReplaceContentSrc(content string) string {
 // expr 正则表达式
 // content 要验证的内容
 func CheckRegex(expr, content string) bool {
-
 	r, err := regexp.Compile(expr)
 	if err != nil {
 		return false
 	}
-
 	return r.MatchString(content)
 }

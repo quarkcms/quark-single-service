@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"encoding/json"
 	"reflect"
 
 	"github.com/quarkcloudio/quark-go/v3"
@@ -38,17 +39,25 @@ func (p *File) BeforeHandle(ctx *quark.Context, fileSystem *quark.FileSystem) (*
 		return fileSystem, nil, err
 	}
 
-	getFileInfo, _ := service.NewFileService().GetInfoByHash(fileHash)
-	if getFileInfo.Id != 0 {
-		fileInfo := &quark.FileInfo{
-			Name: getFileInfo.Name,
-			Size: getFileInfo.Size,
-			Ext:  getFileInfo.Ext,
-			Path: getFileInfo.Path,
-			Url:  getFileInfo.Url,
-			Hash: getFileInfo.Hash,
-		}
+	fileInfo, err := service.NewAttachmentService().GetInfoByHash(fileHash)
+	if err != nil {
+		return fileSystem, nil, err
+	}
 
+	if fileInfo.Id != 0 {
+		var extra map[string]interface{}
+		if fileInfo.Extra != "" {
+			_ = json.Unmarshal([]byte(fileInfo.Extra), &extra)
+		}
+		fileInfo := &quark.FileInfo{
+			Name:  fileInfo.Name,
+			Size:  fileInfo.Size,
+			Ext:   fileInfo.Ext,
+			Path:  fileInfo.Path,
+			Url:   fileInfo.Url,
+			Hash:  fileInfo.Hash,
+			Extra: extra,
+		}
 		return fileSystem, fileInfo, err
 	}
 
@@ -65,7 +74,7 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 
 	// 重写url
 	if driver == quark.LocalStorage {
-		result.Url = service.NewFileService().GetPath(result.Url)
+		result.Url = service.NewAttachmentService().GetFilePath(result.Url)
 	}
 
 	adminInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
@@ -73,23 +82,33 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
+	extra := ""
+	if result.Extra != nil {
+		extraData, err := json.Marshal(result.Extra)
+		if err == nil {
+			extra = string(extraData)
+		}
+	}
+
 	// 插入数据库
-	id, err := service.NewFileService().InsertGetId(model.File{
-		ObjType: "ADMIN",
-		ObjId:   adminInfo.Id,
-		Name:    result.Name,
-		Size:    result.Size,
-		Ext:     result.Ext,
-		Path:    result.Path,
-		Url:     result.Url,
-		Hash:    result.Hash,
-		Status:  1,
+	id, err := service.NewAttachmentService().InsertGetId(model.Attachment{
+		Source: "ADMIN",
+		Uid:    adminInfo.Id,
+		Name:   result.Name,
+		Type:   "FILE",
+		Size:   result.Size,
+		Ext:    result.Ext,
+		Path:   result.Path,
+		Url:    result.Url,
+		Hash:   result.Hash,
+		Extra:  extra,
+		Status: 1,
 	})
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
-	return ctx.JSON(200, message.Success("上传成功", "", response.UploadFileResp{
+	return ctx.JSON(200, message.Success("上传成功", "", response.UploadResp{
 		Id:          id,
 		ContentType: result.ContentType,
 		Ext:         result.Ext,
@@ -98,5 +117,6 @@ func (p *File) AfterHandle(ctx *quark.Context, result *quark.FileInfo) error {
 		Path:        result.Path,
 		Size:        result.Size,
 		Url:         result.Url,
+		Extra:       result.Extra,
 	}))
 }

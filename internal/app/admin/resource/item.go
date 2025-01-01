@@ -129,7 +129,7 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			SetWhen(0, func() interface{} {
 				return []interface{}{
 					field.ImagePicker("image", "图片", func() interface{} {
-						return "<img src='" + utils.GetPicturePath(p.Field["id"]) + "' width=50 height=50 />"
+						return "<img src='" + utils.GetImagePath(p.Field["id"]) + "' width=50 height=50 />"
 					}),
 
 					field.Number("price", "售价").

@@ -26,6 +26,6 @@ func (p *TotalFile) Calculate() *statistic.Component {
 
 	return p.
 		Init().
-		Count(db.Client.Model(&model.File{})).
+		Count(db.Client.Model(&model.Attachment{}).Where("type = ?", "FILE")).
 		SetValueStyle(map[string]string{"color": "#cf1322"})
 }
