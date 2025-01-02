@@ -32,7 +32,6 @@ func ProHandle() {
 		&model.Item{},
 		&model.ItemAttr{},
 		&model.ItemAttrValue{},
-		&model.ItemAttrResult{},
 		&model.ItemCategory{},
 		&model.Order{},
 		&model.OrderDetail{},

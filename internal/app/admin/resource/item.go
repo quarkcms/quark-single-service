@@ -11,6 +11,7 @@ import (
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
+	"gorm.io/gorm"
 )
 
 type Item struct {
@@ -81,6 +82,8 @@ func (p *Item) Field1(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
+
+		field.Hidden("attrs", "Attrs"),
 
 		field.Text("name", "商品名称").
 			SetRules([]rule.Rule{
@@ -156,7 +159,7 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			}).
 			SetWhen(1, func() interface{} {
 				return []interface{}{
-					field.Sku("attributes", "datasource", "商品规格", "商品属性").
+					field.Sku("attrs", "attr_values", "商品规格", "商品属性").
 						SetFields([]interface{}{
 							field.ImagePicker("image", "图片").
 								SetColumnWidth(140),
@@ -249,4 +252,31 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 		actions.FormSubmit(),
 		actions.FormExtraBack(),
 	}
+}
+
+// 编辑页面显示前回调
+func (p *Item) BeforeEditing(request *quark.Context, data map[string]interface{}) map[string]interface{} {
+	if data["attrs"] != nil {
+
+	}
+	if data["attr_values"] != nil {
+
+	}
+	return data
+}
+
+// 保存数据前回调
+func (p *Item) BeforeSaving(ctx *quark.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
+	if submitData["attrs"] != nil {
+
+	}
+	if submitData["attr_values"] != nil {
+
+	}
+	return submitData, nil
+}
+
+// 保存数据后回调
+func (p *Item) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
+	return err
 }
