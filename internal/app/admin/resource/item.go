@@ -10,7 +10,6 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
-	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -131,9 +130,7 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 			SetDefault(0).
 			SetWhen(0, func() interface{} {
 				return []interface{}{
-					field.ImagePicker("image", "图片", func() interface{} {
-						return "<img src='" + utils.GetImagePath(p.Field["id"]) + "' width=50 height=50 />"
-					}),
+					field.ImagePicker("image", "图片"),
 
 					field.Number("price", "售价").
 						SetPrecision(2).

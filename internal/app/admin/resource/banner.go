@@ -43,8 +43,7 @@ func (p *Banner) Fields(ctx *quark.Context) []interface{} {
 				rule.Required("标题必须填写"),
 			}),
 
-		field.Image("cover_id", "图片").
-			OnlyOnForms(),
+		field.Image("cover_id", "图片"),
 
 		field.Select("category_id", "广告位").
 			SetOptions(categorys).
