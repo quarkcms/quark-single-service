@@ -18,7 +18,7 @@ func (p *Bill) Init(ctx *quark.Context) interface{} {
 	p.Title = "资金流水"
 
 	// 模型
-	p.Model = &model.UserBill{}
+	p.Model = &model.Bill{}
 
 	// 分页
 	p.PageSize = 10

@@ -7,10 +7,10 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 )
 
-// UserBill 定义用户账单表的结构体
-type UserBill struct {
-	Id        uint              `json:"id" gorm:"primaryKey;autoIncrement;comment:用户账单id"`         // 用户账单id
-	Uid       uint              `json:"uid" gorm:"not null;default:0;comment:用户uid;index:openid"`  // 用户uid
+// Bill 定义用户账单表的结构体
+type Bill struct {
+	Id        int               `json:"id" gorm:"primaryKey;autoIncrement;comment:用户账单id"`         // 用户账单id
+	Uid       int               `json:"uid" gorm:"not null;default:0;comment:用户uid;index:openid"`  // 用户uid
 	LinkId    string            `json:"link_id" gorm:"not null;default:'0';comment:关联id"`          // 关联id
 	PM        uint8             `json:"pm" gorm:"not null;default:0;comment:0=支出,1=获得"`            // 0 = 支出 1 = 获得
 	Title     string            `json:"title" gorm:"not null;default:'';comment:账单标题"`             // 账单标题
@@ -25,7 +25,7 @@ type UserBill struct {
 }
 
 // Seeder
-func (m *UserBill) Seeder() {
+func (m *Bill) Seeder() {
 
 	// 如果菜单已存在，不执行Seeder操作
 	if service.NewMenuService().IsExist(97) {

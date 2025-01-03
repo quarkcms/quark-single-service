@@ -18,7 +18,7 @@ func (p *BillRecord) Init(ctx *quark.Context) interface{} {
 	p.Title = "账单记录"
 
 	// 模型
-	p.Model = &model.UserBill{}
+	p.Model = &model.BillRecord{}
 
 	// 分页
 	p.PageSize = 10

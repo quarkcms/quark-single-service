@@ -251,17 +251,6 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 	}
 }
 
-// 保存数据前回调
-func (p *Item) BeforeSaving(ctx *quark.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
-	if submitData["attrs"] != nil {
-
-	}
-	if submitData["attr_values"] != nil {
-
-	}
-	return submitData, nil
-}
-
 // 保存数据后回调
 func (p *Item) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
 	return err

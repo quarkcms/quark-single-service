@@ -36,11 +36,12 @@ func ProHandle() {
 		&model.Order{},
 		&model.OrderDetail{},
 		&model.OrderStatus{},
-		&model.UserBill{},
+		&model.Bill{},
+		&model.BillRecord{},
 	)
 
 	// 数据填充
 	(&model.Item{}).Seeder()
 	(&model.Order{}).Seeder()
-	(&model.UserBill{}).Seeder()
+	(&model.Bill{}).Seeder()
 }
