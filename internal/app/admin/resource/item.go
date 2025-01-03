@@ -251,17 +251,6 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 	}
 }
 
-// 编辑页面显示前回调
-func (p *Item) BeforeEditing(request *quark.Context, data map[string]interface{}) map[string]interface{} {
-	if data["attrs"] != nil {
-
-	}
-	if data["attr_values"] != nil {
-
-	}
-	return data
-}
-
 // 保存数据前回调
 func (p *Item) BeforeSaving(ctx *quark.Context, submitData map[string]interface{}) (map[string]interface{}, error) {
 	if submitData["attrs"] != nil {
