@@ -219,7 +219,7 @@ func (p *Item) Field5(ctx *quark.Context) []interface{} {
 		field.Text("keyword", "关键词").
 			OnlyOnForms(),
 
-		field.TextArea("info", "简介").
+		field.TextArea("description", "简介").
 			SetRules([]rule.Rule{
 				rule.Max(200, "描述不能超过200个字符"),
 			}).
