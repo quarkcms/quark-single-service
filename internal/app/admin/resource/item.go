@@ -208,6 +208,13 @@ func (p *Item) Field4(ctx *quark.Context) []interface{} {
 		field.Number("sort", "排序").
 			SetEditable(true).
 			SetDefault(0),
+
+		field.Switch("status", "状态").
+			SetTrueValue("上架").
+			SetFalseValue("下架").
+			SetEditable(true).
+			SetDefault(true).
+			OnlyOnIndex(),
 	}
 }
 
