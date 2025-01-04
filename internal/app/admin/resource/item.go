@@ -253,5 +253,11 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 
 // 保存数据后回调
 func (p *Item) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
+
+	// 更新商品属性
+	service.NewItemService().StoreOrUpdateItemAttrs(id, data["attrs"])
+
+	// 更新商品属性值
+	service.NewItemService().StoreOrUpdateItemAttrValues(id, data["attr_values"])
 	return err
 }
