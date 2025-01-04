@@ -1,6 +1,8 @@
 package resource
 
 import (
+	"fmt"
+
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/actions"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
@@ -30,6 +32,42 @@ func (p *Item) Init(ctx *quark.Context) interface{} {
 	p.PageSize = 10
 
 	return p
+}
+
+// 只查询文章类型
+func (p *Item) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	activeKey := ctx.QueryParam("activeKey")
+	switch activeKey {
+	case "onSale":
+		query.Where("status", 1)
+	case "offSale":
+		query.Where("status", 0)
+	}
+	return query
+}
+
+// 菜单
+func (p *Item) Menus(ctx *quark.Context) interface{} {
+	totalNum := service.NewItemService().GetItemNumByStatus(nil)
+	onSalelNum := service.NewItemService().GetItemNumByStatus(1)
+	offSaleNum := service.NewItemService().GetItemNumByStatus(0)
+	return map[string]interface{}{
+		"type": "tab",
+		"items": []map[string]string{
+			{
+				"key":   "all",
+				"label": fmt.Sprintf("全部商品(%d)", totalNum),
+			},
+			{
+				"key":   "onSale",
+				"label": fmt.Sprintf("出售中的商品(%d)", onSalelNum),
+			},
+			{
+				"key":   "offSale",
+				"label": fmt.Sprintf("仓库中的商品(%d)", offSaleNum),
+			},
+		},
+	}
 }
 
 func (p *Item) Fields(ctx *quark.Context) []interface{} {
@@ -163,16 +201,20 @@ func (p *Item) Field2(ctx *quark.Context) []interface{} {
 								SetColumnWidth(140),
 
 							field.Number("price", "售价").
-								SetColumnWidth(120),
+								SetColumnWidth(120).
+								SetDefault(0),
 
 							field.Number("cost", "成本价").
-								SetColumnWidth(120),
+								SetColumnWidth(120).
+								SetDefault(0),
 
 							field.Number("ot_price", "划线价").
-								SetColumnWidth(120),
+								SetColumnWidth(120).
+								SetDefault(0),
 
 							field.Number("stock", "库存").
-								SetColumnWidth(120),
+								SetColumnWidth(120).
+								SetDefault(0),
 						}).
 						OnlyOnForms(),
 				}
@@ -239,8 +281,7 @@ func (p *Item) Field5(ctx *quark.Context) []interface{} {
 func (p *Item) Searches(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		searches.Input("name", "商品名称"),
-		searches.Status(),
-		searches.DatetimeRange("created_at", "创建时间"),
+		searches.DatetimeRange("created_at", "上架时间"),
 	}
 }
 
