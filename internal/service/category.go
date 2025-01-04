@@ -32,3 +32,22 @@ func (p *CategoryService) GetListWithRoot(categoryType string) (categories []mod
 	list = append(list, model.Category{Id: 0, Pid: -1, Title: "根节点"})
 	return list, err
 }
+
+func (p *CategoryService) DeleteItemCategoryByItemId(itemId interface{}) {
+	db.Client.
+		Where("item_id = ?", itemId).
+		Delete(&model.ItemCategory{})
+}
+
+func (p *CategoryService) StoreItemCategory(itemId int, categoryIds interface{}) {
+	p.DeleteItemCategoryByItemId(itemId)
+	if categoryIds == nil {
+		return
+	}
+	for _, item := range categoryIds.([]interface{}) {
+		db.Client.Create(&model.ItemCategory{
+			ItemId:     itemId,
+			CategoryId: int(item.(float64)),
+		})
+	}
+}

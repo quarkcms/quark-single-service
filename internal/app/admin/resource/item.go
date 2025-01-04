@@ -85,6 +85,7 @@ func (p *Item) Field1(ctx *quark.Context) []interface{} {
 		field.Hidden("attrs", "Attrs"),
 
 		field.Text("name", "商品名称").
+			SetColumnWidth(160).
 			SetRules([]rule.Rule{
 				rule.Required("商品名称必须填写"),
 			}),
@@ -185,7 +186,6 @@ func (p *Item) Field3(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 
 	return []interface{}{
-
 		field.Editor("content", "商品详情").
 			OnlyOnForms(),
 	}
@@ -206,6 +206,7 @@ func (p *Item) Field4(ctx *quark.Context) []interface{} {
 			SetDefault(0),
 
 		field.Number("sort", "排序").
+			SetEditable(true).
 			SetDefault(0),
 	}
 }
@@ -253,10 +254,10 @@ func (p *Item) Actions(ctx *quark.Context) []interface{} {
 
 // 保存数据后回调
 func (p *Item) AfterSaved(ctx *quark.Context, id int, data map[string]interface{}, result *gorm.DB) (err error) {
-
+	// 更新商品分类表
+	service.NewCategoryService().StoreItemCategory(id, data["category_ids"])
 	// 更新商品属性
 	service.NewItemService().StoreOrUpdateItemAttrs(id, data["attrs"])
-
 	// 更新商品属性值
 	service.NewItemService().StoreOrUpdateItemAttrValues(id, data["attr_values"])
 	return err
