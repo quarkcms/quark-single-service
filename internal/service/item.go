@@ -16,7 +16,9 @@ func NewItemService() *ItemService {
 }
 
 func (p *ItemService) DeleteItemAttrsByItemId(itemId interface{}) {
-	db.Client.Where("item_id = ?", itemId).Delete(&model.ItemAttr{})
+	db.Client.
+		Where("item_id = ?", itemId).
+		Delete(&model.ItemAttr{})
 }
 
 func (p *ItemService) StoreOrUpdateItemAttrs(itemId int, attrs interface{}) {
