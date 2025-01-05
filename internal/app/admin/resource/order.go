@@ -32,17 +32,17 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
-		field.Text("title", "订单号"),
+		field.Text("order_no", "订单号"),
 
 		field.Text("name", "商品信息"),
 
 		field.Text("user_info", "用户信息"),
 
-		field.Text("description", "支付金额"),
+		field.Text("pay_price", "支付金额"),
 
-		field.Text("type", "支付方式"),
+		field.Text("pay_type", "支付方式"),
 
-		field.Text("created_at", "支付时间"),
+		field.Text("pay_time", "支付时间"),
 
 		field.Text("status", "订单状态"),
 	}
@@ -51,9 +51,9 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 // 搜索
 func (p *Order) Searches(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		searches.Input("title", "标题"),
+		searches.Input("order_no", "订单号"),
 		searches.Status(),
-		searches.DatetimeRange("created_at", "创建时间"),
+		searches.DatetimeRange("pay_time", "支付时间"),
 	}
 }
 
