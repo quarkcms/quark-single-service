@@ -14,3 +14,11 @@ func NewOrderService() *OrderService {
 func (p *OrderService) Submit() {
 	db.Client.Create(&model.Order{})
 }
+
+func (p *OrderService) Refund() {
+	db.Client.Create(&model.Order{})
+}
+
+func (p *OrderService) Verify() {
+	db.Client.Create(&model.Order{})
+}
