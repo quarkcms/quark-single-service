@@ -15,7 +15,7 @@ func NewItemService() *ItemService {
 	return &ItemService{}
 }
 
-func (p *ItemService) GetCountByStatus(status interface{}) int64 {
+func (p *ItemService) GetNumByStatus(status interface{}) int64 {
 	var num int64
 	query := db.Client.Model(&model.Item{})
 	if status != nil {

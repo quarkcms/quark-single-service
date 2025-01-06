@@ -48,9 +48,9 @@ func (p *Item) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 
 // 菜单
 func (p *Item) Menus(ctx *quark.Context) interface{} {
-	totalNum := service.NewItemService().GetCountByStatus(nil)
-	onSalelNum := service.NewItemService().GetCountByStatus(1)
-	offSaleNum := service.NewItemService().GetCountByStatus(0)
+	totalNum := service.NewItemService().GetNumByStatus(nil)
+	onSalelNum := service.NewItemService().GetNumByStatus(1)
+	offSaleNum := service.NewItemService().GetNumByStatus(0)
 	return map[string]interface{}{
 		"type": "tab",
 		"items": []map[string]string{
