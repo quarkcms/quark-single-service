@@ -12,6 +12,12 @@ func NewOrderService() *OrderService {
 }
 
 // 根据订单id获取订单信息
+func (p *OrderService) GetOrderByOrderId(orderId interface{}) (list []model.Order, err error) {
+	err = db.Client.Where("order_id = ?", orderId).Find(&list).Error
+	return
+}
+
+// 根据订单id获取订单详细信息
 func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (list []model.OrderDetail, err error) {
 	err = db.Client.Where("order_id = ?", orderId).Find(&list).Error
 	return
