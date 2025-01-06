@@ -11,7 +11,7 @@ func NewCategoryService() *CategoryService {
 	return &CategoryService{}
 }
 
-// 获取菜单列表
+// 获取分类列表
 func (p *CategoryService) GetList(categoryType string) (categories []model.Category, err error) {
 	list := []model.Category{}
 	err = db.Client.
@@ -23,7 +23,7 @@ func (p *CategoryService) GetList(categoryType string) (categories []model.Categ
 	return list, err
 }
 
-// 获取菜单列表携带根节点
+// 获取分类列表携带根节点
 func (p *CategoryService) GetListWithRoot(categoryType string) (categories []model.Category, err error) {
 	list, err := p.GetList(categoryType)
 	if err != nil {
@@ -33,12 +33,14 @@ func (p *CategoryService) GetListWithRoot(categoryType string) (categories []mod
 	return list, err
 }
 
+// 删除商品类别
 func (p *CategoryService) DeleteItemCategoryByItemId(itemId interface{}) {
 	db.Client.
 		Where("item_id = ?", itemId).
 		Delete(&model.ItemCategory{})
 }
 
+// 创建商品类别
 func (p *CategoryService) StoreItemCategory(itemId int, categoryIds interface{}) {
 	p.DeleteItemCategoryByItemId(itemId)
 	if categoryIds == nil {
