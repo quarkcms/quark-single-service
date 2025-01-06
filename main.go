@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"log"
 	"os"
 
 	echomiddleware "github.com/labstack/echo/v4/middleware"
@@ -20,6 +21,7 @@ import (
 	"github.com/quarkcloudio/quark-smart/v2/pkg/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func main() {
@@ -77,7 +79,12 @@ func main() {
 		AppKey: appKey,
 		DBConfig: &quark.DBConfig{
 			Dialector: mysql.Open(dsn),
-			Opts:      &gorm.Config{},
+			Opts: &gorm.Config{
+				Logger: logger.New(log.Default(), logger.Config{
+					LogLevel:                  logger.Error, // 打印错误日志
+					IgnoreRecordNotFoundError: true,         // 忽略记录未找到错误
+				}),
+			},
 		},
 		RedisConfig: redisConfig,
 		Providers:   providers,
