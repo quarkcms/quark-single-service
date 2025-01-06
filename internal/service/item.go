@@ -117,7 +117,11 @@ func (p *ItemService) StoreOrUpdateItemAttrValue(itemId int, suk string, attrVal
 		Status:    status,
 	}
 	if getItemAttrValue.Id != 0 {
-		db.Client.Model(&model.ItemAttrValue{}).Where("item_id = ?", itemId).Where("suk = ?", suk).Updates(&itemAttrValue)
+		db.Client.
+			Model(&model.ItemAttrValue{}).
+			Where("item_id = ?", itemId).
+			Where("suk = ?", suk).
+			Updates(&itemAttrValue)
 	} else {
 		db.Client.Create(&itemAttrValue)
 	}
