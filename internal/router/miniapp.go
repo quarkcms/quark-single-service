@@ -8,5 +8,5 @@ import (
 // 注册MiniApp路由
 func MiniAppRegister(b *quark.Engine) {
 	g := b.Group("/api/miniapp")
-	g.GET("/api/miniapp/", (&handler.Index{}).Index)
+	g.GET("/", (&handler.Index{}).Index)
 }
