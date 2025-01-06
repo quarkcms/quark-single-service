@@ -5,6 +5,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
+	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 )
 
 type Order struct {
@@ -34,7 +35,9 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 
 		field.Text("order_no", "订单号"),
 
-		field.Text("name", "商品信息"),
+		field.Text("name", "商品信息", func() {
+			service.NewOrderService().GetOrderDetailsByOrderId(p.Field["id"])
+		}),
 
 		field.Text("user_info", "用户信息"),
 

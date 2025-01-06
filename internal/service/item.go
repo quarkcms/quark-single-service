@@ -7,6 +7,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
 
 type ItemService struct{}
@@ -125,4 +126,69 @@ func (p *ItemService) StoreOrUpdateItemAttrValue(itemId int, suk string, attrVal
 	} else {
 		db.Client.Create(&itemAttrValue)
 	}
+}
+
+// 获取商品
+func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (data dto.ItemDTO, err error) {
+	item := model.Item{}
+	query := db.Client
+	if withDelete {
+		query.Unscoped()
+	}
+	if status != nil {
+		query.Where("status = ?", status)
+	}
+	err = query.Where("id = ?", itemId).First(&item).Error
+	data = dto.ItemDTO{
+		Id:          item.Id,
+		MerId:       item.MerId,
+		Image:       utils.GetImagePath(item.Image),
+		SliderImage: item.SliderImage,
+		Name:        item.Name,
+		Keyword:     item.Keyword,
+		Description: item.Description,
+		CategoryIds: item.CategoryIds,
+		Price:       item.Price,
+		OtPrice:     item.OtPrice,
+		Sort:        item.Sort,
+		Sales:       item.Sales,
+		Stock:       item.Stock,
+		Status:      item.Status,
+		Cost:        item.Cost,
+		Ficti:       item.Ficti,
+		Views:       item.Views,
+		SpecType:    item.SpecType,
+	}
+	return
+}
+
+// 根据id获取商品
+func (p *ItemService) GetItemById(itemId int, status int) (data dto.ItemDTO, err error) {
+	return p.GetItem(itemId, 1, false)
+}
+
+// 根据id获取商品（包含已删除的）
+func (p *ItemService) GetItemWithDeleteById(itemId int) (data dto.ItemDTO, err error) {
+	return p.GetItem(itemId, nil, true)
+}
+
+// 根据id获取商品规格值
+func (p *ItemService) GetItemAttrValueById(id interface{}) (data dto.ItemAttrValueDTO, err error) {
+	itemAttrValue := model.ItemAttrValue{}
+	err = db.Client.Unscoped().Where("id = ?", id).First(&itemAttrValue).Error
+	data = dto.ItemAttrValueDTO{
+		Id:        itemAttrValue.Id,
+		ItemId:    itemAttrValue.ItemId,
+		Suk:       itemAttrValue.Suk,
+		Stock:     itemAttrValue.Stock,
+		Sales:     itemAttrValue.Sales,
+		Price:     itemAttrValue.Price,
+		Image:     utils.GetImagePath(itemAttrValue.Image),
+		Cost:      itemAttrValue.Cost,
+		OtPrice:   itemAttrValue.OtPrice,
+		AttrValue: itemAttrValue.AttrValue,
+		IsDefault: itemAttrValue.IsDefault == 1,
+		Status:    itemAttrValue.Status == 1,
+	}
+	return
 }

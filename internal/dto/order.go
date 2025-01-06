@@ -40,16 +40,16 @@ type OrderDTO struct {
 
 // 订单详情信息
 type OrderDetailDTO struct {
-	Id          int                `json:"id"`            // 主键
-	OrderId     int                `json:"order_id"`      // 订单id
-	ItemId      int                `json:"item_id"`       // 商品ID
-	ItemInfo    []ItemDTO          `json:"itemInfo"`      // 商品信息
-	OrderNo     string             `json:"order_no"`      // 订单号
-	Name        string             `json:"name"`          // 商品名称
-	AttrValueId int                `json:"attr_value_id"` // 规格属性值id
-	AttrInfo    []ItemAttrValueDTO `json:"attrInfo"`      // 商品信息
-	Image       string             `json:"image"`         // 商品图片
-	SKU         string             `json:"sku"`           // 商品sku
-	Price       float64            `json:"price"`         // 商品价格
-	PayNum      int                `json:"pay_num"`       // 购买数量
+	Id            int              `json:"id"`            // 主键
+	OrderId       int              `json:"order_id"`      // 订单id
+	ItemId        int              `json:"item_id"`       // 商品ID
+	ItemInfo      ItemDTO          `json:"itemInfo"`      // 商品信息
+	OrderNo       string           `json:"order_no"`      // 订单号
+	Name          string           `json:"name"`          // 商品名称
+	AttrValueId   int              `json:"attr_value_id"` // 规格属性值id
+	AttrValueInfo ItemAttrValueDTO `json:"attrInfo"`      // 商品规格信息
+	Image         string           `json:"image"`         // 商品图片
+	SKU           string           `json:"sku"`           // 商品sku
+	Price         float64          `json:"price"`         // 商品价格
+	PayNum        int              `json:"pay_num"`       // 购买数量
 }
