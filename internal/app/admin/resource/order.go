@@ -52,7 +52,6 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 func (p *Order) Searches(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		searches.Input("order_no", "订单号"),
-		searches.Status(),
 		searches.DatetimeRange("pay_time", "支付时间"),
 	}
 }
