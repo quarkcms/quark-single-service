@@ -7,8 +7,8 @@ type OrderDetail struct {
 	PayNum      int `json:"pay_num"`
 }
 
-// 订单
-type OrderReq struct {
+// 提交订单
+type SubmitOrderReq struct {
 	Realname     string        `json:"realname"`
 	UserPhone    string        `json:"user_phone"`
 	UserAddress  string        `json:"user_address"`
