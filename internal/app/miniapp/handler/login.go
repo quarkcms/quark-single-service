@@ -9,12 +9,12 @@ import (
 // 结构体
 type Login struct{}
 
-// 用户登录
+// 用户名、密码登录
 func (p *Login) Index(ctx *quark.Context) error {
 	return ctx.JSONOk("Hello, world!")
 }
 
-// 用户模拟登录
+// 模拟登录
 func (p *Login) Mock(ctx *quark.Context) error {
 	if !(config.App.Env == "develop" || config.App.Env == "dev" || config.App.Env == "development") {
 		return ctx.JSONError("It must be a development environment!")
