@@ -26,7 +26,7 @@ func Handle() {
 }
 
 // 高级功能
-func ProHandle() {
+func MiniAppHandle() {
 	// 迁移数据
 	db.Client.AutoMigrate(
 		&model.Item{},

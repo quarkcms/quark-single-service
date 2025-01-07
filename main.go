@@ -106,18 +106,10 @@ func main() {
 
 		// 构建本项目数据库
 		database.Handle()
-
-		// 构建高级功能数据库
-		if appPro {
-			database.ProHandle()
-		}
 	}
 
 	// 管理后台中间件
 	b.Use(adminmodule.Middleware)
-
-	// MiniApp中间件
-	b.Use(miniappmodule.Middleware)
 
 	// 本项目中间件
 	b.Use((&middleware.AppMiddleware{}).Handle)
@@ -152,8 +144,19 @@ func main() {
 	// 注册Web路由
 	router.WebRegister(b)
 
-	// 注册MiniApp路由
-	router.MiniAppRegister(b)
+	// 开启高级功能
+	if appPro {
+		// 构建数据库
+		if !file.IsExist("install.lock") {
+			database.MiniAppHandle()
+		}
+
+		// 加载中间件
+		b.Use(miniappmodule.Middleware)
+
+		// 注册MiniApp路由
+		router.MiniAppRegister(b)
+	}
 
 	// 启动服务
 	b.Run(config.App.Host)
