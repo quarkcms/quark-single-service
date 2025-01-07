@@ -32,4 +32,5 @@ var ProProviders = []interface{}{
 	&resource.VerifyOrder{},
 	&resource.Bill{},
 	&resource.BillRecord{},
+	&resource.BillDetail{},
 }
