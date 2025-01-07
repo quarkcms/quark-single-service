@@ -1,11 +1,10 @@
 package service
 
 import (
-	"time"
-
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcloudio/quark-go/v3/dto"
 	"github.com/quarkcloudio/quark-go/v3/model"
+	appservice "github.com/quarkcloudio/quark-go/v3/service"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 )
 
 type UserService struct{}
@@ -16,21 +15,25 @@ func NewUserService() *UserService {
 
 // 获取普通用户JWT信息
 func (p *UserService) GetUserClaims(userInfo model.User) *dto.UserClaims {
-	return &dto.UserClaims{
-		Id:        userInfo.Id,
-		Username:  userInfo.Username,
-		Nickname:  userInfo.Nickname,
-		Sex:       userInfo.Sex,
-		Email:     userInfo.Email,
-		Phone:     userInfo.Phone,
-		Avatar:    userInfo.Avatar,
-		GuardName: "user",
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 过期时间，默认24小时
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                     // 颁发时间
-			NotBefore: jwt.NewNumericDate(time.Now()),                     // 不早于时间
-			Issuer:    "QuarkGo",                                          // 颁发人
-			Subject:   "User Token",                                       // 主题信息
-		},
-	}
+	return appservice.NewUserService().GetUserClaims(userInfo)
+}
+
+// 获取当前认证的用户信息，默认参数为tokenString
+func (p *UserService) GetAuthUser(appKey string, tokenString string) (userClaims *dto.UserClaims, err error) {
+	return appservice.NewUserService().GetAuthUser(appKey, tokenString)
+}
+
+// 通过ID获取用户信息
+func (p *UserService) GetInfoById(id interface{}) (user model.User, err error) {
+	return appservice.NewUserService().GetInfoById(id)
+}
+
+// 通过用户名获取用户信息
+func (p *UserService) GetInfoByUsername(username string) (user model.User, err error) {
+	return appservice.NewUserService().GetInfoByUsername(username)
+}
+
+// 更新最后一次登录数据
+func (p *UserService) UpdateLastLogin(uid int, lastLoginIp string, lastLoginTime datetime.Datetime) error {
+	return appservice.NewUserService().UpdateLastLogin(uid, lastLoginIp, lastLoginTime)
 }
