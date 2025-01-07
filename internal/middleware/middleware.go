@@ -3,13 +3,11 @@ package middleware
 import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-smart/v2/config"
+	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 )
 
-// 结构体
-type AppMiddleware struct{}
-
 // 中间件
-func (am *AppMiddleware) Handle(ctx *quark.Context) error {
+func AppMiddleware(ctx *quark.Context) error {
 	if config.App.Env == "demo" {
 		isForbiddenRoute := false
 		forbiddenRoutes := []string{
@@ -37,5 +35,18 @@ func (am *AppMiddleware) Handle(ctx *quark.Context) error {
 		}
 	}
 
+	return ctx.Next()
+}
+
+// MiniApp中间件
+func MiniAppMiddleware(ctx *quark.Context) error {
+	userInfo, err := service.NewUserService().GetAuthUser(ctx.Engine.GetConfig().AppKey, ctx.Token())
+	if err != nil {
+		return ctx.JSON(401, quark.Error(err.Error()))
+	}
+	guardName := userInfo.GuardName
+	if guardName != "user" {
+		return ctx.JSON(401, quark.Error("401 Unauthozied"))
+	}
 	return ctx.Next()
 }

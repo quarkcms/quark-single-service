@@ -10,7 +10,6 @@ import (
 	adminservice "github.com/quarkcloudio/quark-go/v3/app/admin"
 	miniappservice "github.com/quarkcloudio/quark-go/v3/app/miniapp"
 	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
-	miniappmodule "github.com/quarkcloudio/quark-go/v3/template/miniapp"
 	"github.com/quarkcloudio/quark-go/v3/utils/file"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/quarkcloudio/quark-smart/v2/database"
@@ -112,7 +111,7 @@ func main() {
 	b.Use(adminmodule.Middleware)
 
 	// 本项目中间件
-	b.Use((&middleware.AppMiddleware{}).Handle)
+	b.Use(middleware.AppMiddleware)
 
 	// 开启Debug模式
 	b.Echo().Debug = config.App.Debug
@@ -150,9 +149,6 @@ func main() {
 		if !file.IsExist("install.lock") {
 			database.MiniAppHandle()
 		}
-
-		// 加载中间件
-		b.Use(miniappmodule.Middleware)
 
 		// 注册MiniApp路由
 		router.MiniAppRegister(b)
