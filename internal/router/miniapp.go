@@ -12,10 +12,17 @@ func MiniAppRegister(b *quark.Engine) {
 	// 不需要认证路由组
 	g := b.Group("/api/miniapp")
 	g.GET("/index/index", (&handler.Index{}).Index)
-	g.GET("/login/index", (&handler.Login{}).Index)
+	g.POST("/register/index", (&handler.Register{}).Index)
+	g.POST("/login/index", (&handler.Login{}).Index)
 	g.GET("/login/mock", (&handler.Login{}).Mock)
 
 	// 需要登录认证路由组
 	ag := b.Group("/api/miniapp", middleware.MiniAppMiddleware)
 	ag.GET("/user/index", (&handler.User{}).Index)
+
+	// 订单路由组
+	ag.GET("/order/index", (&handler.Order{}).Index)
+	ag.GET("/order/detail", (&handler.Order{}).Detail)
+	ag.POST("/order/submit", (&handler.Order{}).Submit)
+	ag.GET("/order/cancel", (&handler.Order{}).Cancel)
 }
