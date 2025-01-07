@@ -152,6 +152,9 @@ func main() {
 	// 注册Web路由
 	router.WebRegister(b)
 
+	// 注册MiniApp路由
+	router.MiniAppRegister(b)
+
 	// 启动服务
 	b.Run(config.App.Host)
 }
