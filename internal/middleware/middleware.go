@@ -34,7 +34,6 @@ func AppMiddleware(ctx *quark.Context) error {
 			return ctx.JSON(200, quark.Error("演示站点禁止了此操作！"))
 		}
 	}
-
 	return ctx.Next()
 }
 
