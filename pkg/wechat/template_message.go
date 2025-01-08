@@ -22,7 +22,7 @@ type Message struct {
 // 初始化微信模板消息
 func NewWechatTemplateMessage() *WechatTemplateMessage {
 	return &WechatTemplateMessage{
-		officialaccount: NewWechatOfficialAccount(),
+		officialaccount: NewWechatOfficialAccount().officialaccount,
 	}
 }
 
