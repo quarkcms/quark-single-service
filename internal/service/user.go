@@ -74,7 +74,6 @@ func (p *UserService) AuthByWechatMiniProgram(param dto.WechatMiniProgramDTO) (t
 	user := p.GetInfoByWxOpenid(authResponse.OpenID)
 	if user.Id > 0 {
 		if err = db.Client.Model(model.User{}).Where("id = ?", user.Id).Updates(&model.User{
-			Nickname:      plainData.NickName,
 			LastLoginIp:   param.ClientIp,
 			LastLoginTime: datetime.Now(),
 		}).Error; err != nil {
@@ -83,6 +82,7 @@ func (p *UserService) AuthByWechatMiniProgram(param dto.WechatMiniProgramDTO) (t
 	} else {
 		user = model.User{
 			Nickname:      plainData.NickName,
+			Sex:           plainData.Gender,
 			Avatar:        plainData.AvatarURL,
 			WxOpenid:      authResponse.OpenID,
 			WxUnionid:     authResponse.UnionID,
@@ -115,7 +115,6 @@ func (p *UserService) AuthByWechatOfficialAccount(param dto.WechatOfficialAccoun
 	user := p.GetInfoByWxOpenid(authResponse.OpenID)
 	if user.Id > 0 {
 		if err = db.Client.Model(model.User{}).Where("id = ?", user.Id).Updates(&model.User{
-			Nickname:      authResponse.Nickname,
 			LastLoginIp:   param.ClientIp,
 			LastLoginTime: datetime.Now(),
 		}).Error; err != nil {
@@ -125,6 +124,7 @@ func (p *UserService) AuthByWechatOfficialAccount(param dto.WechatOfficialAccoun
 		user = model.User{
 			Nickname:      authResponse.Nickname,
 			Avatar:        authResponse.HeadImgURL,
+			Sex:           int(authResponse.Sex),
 			WxOpenid:      authResponse.OpenID,
 			WxUnionid:     authResponse.Unionid,
 			LastLoginIp:   param.ClientIp,
