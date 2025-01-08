@@ -15,7 +15,7 @@ func (p *Login) Index(ctx *quark.Context) error {
 
 // 模拟登录
 func (p *Login) Mock(ctx *quark.Context) error {
-	token, err := service.NewAuthService(ctx).Mock()
+	token, err := service.NewAuthService(ctx).MockLogin()
 	if err != nil {
 		return ctx.JSONError(err.Error())
 	}

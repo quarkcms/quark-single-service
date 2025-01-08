@@ -31,7 +31,7 @@ func (p *AuthService) GetUid() (userId int, err error) {
 }
 
 // 模拟登录
-func (p *AuthService) Mock() (token string, err error) {
+func (p *AuthService) MockLogin() (token string, err error) {
 	if !(config.App.Env == "develop" || config.App.Env == "dev" || config.App.Env == "development") {
 		return "", errors.New("it must be a development environment")
 	}
