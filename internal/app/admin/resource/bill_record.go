@@ -81,21 +81,21 @@ func (p *BillRecord) Fields(ctx *quark.Context) []interface{} {
 		field.Text("day", "日期").
 			SetColumnWidth(100),
 
-		field.Number("entry_price", "收入金额", func() interface{} {
-			return "￥" + strconv.FormatFloat(p.Field["entry_price"].(float64), 'f', 2, 64)
+		field.Number("entry_price", "收入金额", func(row map[string]interface{}) interface{} {
+			return "￥" + strconv.FormatFloat(row["entry_price"].(float64), 'f', 2, 64)
 		}).
 			SetColumnWidth(100),
 
-		field.Number("exp_price", "支出金额", func() interface{} {
-			if p.Field["exp_price"].(float64) == 0 {
-				return "￥" + strconv.FormatFloat(p.Field["exp_price"].(float64), 'f', 2, 64)
+		field.Number("exp_price", "支出金额", func(row map[string]interface{}) interface{} {
+			if row["exp_price"].(float64) == 0 {
+				return "￥" + strconv.FormatFloat(row["exp_price"].(float64), 'f', 2, 64)
 			}
-			return "￥-" + strconv.FormatFloat(p.Field["exp_price"].(float64), 'f', 2, 64)
+			return "￥-" + strconv.FormatFloat(row["exp_price"].(float64), 'f', 2, 64)
 		}).
 			SetColumnWidth(100),
 
-		field.Number("income_price", "入账金额", func() interface{} {
-			return "￥" + strconv.FormatFloat(p.Field["income_price"].(float64), 'f', 2, 64)
+		field.Number("income_price", "入账金额", func(row map[string]interface{}) interface{} {
+			return "￥" + strconv.FormatFloat(row["income_price"].(float64), 'f', 2, 64)
 		}).
 			SetColumnWidth(100),
 	}

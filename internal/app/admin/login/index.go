@@ -2,7 +2,6 @@ package login
 
 import (
 	"github.com/dchest/captcha"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/form/rule"
@@ -10,11 +9,8 @@ import (
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/message"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/login"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
-	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
-	"github.com/quarkcloudio/quark-go/v3/utils/hash"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
-	"gorm.io/gorm"
 )
 
 type Index struct {
@@ -101,32 +97,12 @@ func (p *Index) Handle(ctx *quark.Context) error {
 		return ctx.JSON(200, message.Error("用户名或密码不能为空"))
 	}
 
-	adminInfo, err := service.NewUserService().GetInfoByUsername(loginRequest.Username)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return ctx.JSON(200, message.Error("用户不存在"))
-		}
-		return ctx.JSON(200, message.Error(err.Error()))
-	}
-
-	// 检验账号和密码
-	if !hash.Check(adminInfo.Password, loginRequest.Password) {
-		return ctx.JSON(200, message.Error("用户名或密码错误"))
-	}
-
-	config := ctx.Engine.GetConfig()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, service.NewUserService().GetAdminClaims(adminInfo))
-
-	// 更新登录信息
-	service.NewUserService().UpdateLastLogin(adminInfo.Id, ctx.ClientIP(), datetime.Now())
-
-	// 获取token字符串
-	tokenString, err := token.SignedString([]byte(config.AppKey))
+	token, err := service.NewAuthService(ctx).AdminLogin(loginRequest.Username, loginRequest.Password)
 	if err != nil {
 		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	return ctx.JSON(200, message.Success("登录成功", "", map[string]string{
-		"token": tokenString,
+		"token": token,
 	}))
 }

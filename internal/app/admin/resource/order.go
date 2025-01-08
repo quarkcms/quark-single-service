@@ -35,8 +35,8 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 
 		field.Text("order_no", "订单号"),
 
-		field.Text("name", "商品信息", func() {
-			service.NewOrderService().GetOrderDetailsByOrderId(p.Field["id"])
+		field.Text("name", "商品信息", func(row map[string]interface{}) {
+			service.NewOrderService().GetOrderDetailsByOrderId(row["id"])
 		}),
 
 		field.Text("user_info", "用户信息"),

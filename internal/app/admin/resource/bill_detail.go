@@ -94,12 +94,12 @@ func (p *BillDetail) Fields(ctx *quark.Context) []interface{} {
 		field.Datetime("created_at", "交易时间").
 			SetColumnWidth(160),
 
-		field.Text("number", "交易金额", func() interface{} {
-			if p.Field["pm"] == 1 {
-				return "+" + strconv.FormatFloat(p.Field["number"].(float64), 'f', 2, 64)
+		field.Text("number", "交易金额", func(row map[string]interface{}) interface{} {
+			if row["pm"] == 1 {
+				return "+" + strconv.FormatFloat(row["number"].(float64), 'f', 2, 64)
 			}
 
-			return "-" + strconv.FormatFloat(p.Field["number"].(float64), 'f', 2, 64)
+			return "-" + strconv.FormatFloat(row["number"].(float64), 'f', 2, 64)
 		}).
 			SetColumnWidth(100),
 
