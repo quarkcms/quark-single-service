@@ -36,13 +36,10 @@ func (p *AuthService) Mock() (token string, err error) {
 		return "", errors.New("it must be a development environment")
 	}
 	uid := p.ctx.Query("uid", 1)
-
-	// 获取用户信息
 	user, err := NewUserService().GetInfoById(uid)
 	if err != nil {
 		return "", err
 	}
-
 	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60)
 }
 
