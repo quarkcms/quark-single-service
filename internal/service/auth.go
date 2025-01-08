@@ -5,12 +5,12 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/dto"
 	appdto "github.com/quarkcloudio/quark-go/v3/dto"
 	"github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
 	"github.com/quarkcloudio/quark-go/v3/utils/hash"
 	"github.com/quarkcloudio/quark-smart/v2/config"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/wechat"
 )
 
