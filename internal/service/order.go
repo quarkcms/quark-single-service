@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
@@ -56,8 +57,10 @@ func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (orderDetai
 	return
 }
 
-func (p *OrderService) Submit() {
-	db.Client.Create(&model.Order{})
+func (p *OrderService) Submit(uid interface{}, submitOrderReq request.SubmitOrderReq) (orderNo string, err error) {
+	order := model.Order{}
+	err = db.Client.Create(&order).Error
+	return
 }
 
 func (p *OrderService) Refund() {

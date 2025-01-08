@@ -2,6 +2,9 @@ package handler
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/response"
+	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 )
 
 // 结构体
@@ -19,7 +22,22 @@ func (p *Order) Detail(ctx *quark.Context) error {
 
 // 提交订单
 func (p *Order) Submit(ctx *quark.Context) error {
-	return ctx.JSONOk("Hello, world!")
+	submitOrderReq := request.SubmitOrderReq{}
+	ctx.Bind(&submitOrderReq)
+
+	// 获取用户id
+	uid, err := service.NewAuthService(ctx).GetUid()
+	if err != nil {
+		return ctx.JSONError(err.Error())
+	}
+
+	orderNo, err := service.NewOrderService().Submit(uid, submitOrderReq)
+	if err != nil {
+		return ctx.JSONError(err.Error())
+	}
+	return ctx.JSONOk("ok", response.SubmitOrderResp{
+		OrderNo: orderNo,
+	})
 }
 
 // 取消订单
