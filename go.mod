@@ -9,8 +9,8 @@ require (
 	github.com/alibabacloud-go/tea-utils v1.4.5
 	github.com/dchest/captcha v1.0.0
 	github.com/go-pay/gopay v1.5.107
-	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/shirou/gopsutil v3.21.11+incompatible
