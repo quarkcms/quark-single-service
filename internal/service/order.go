@@ -102,6 +102,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 	totalNum := 0
 	totalPrice := 0.00
 	payPrice := 0.00
+	cost := 0.00
 	for _, orderDetail := range orderDetails {
 		var item model.Item
 		err = tx.Where("id = ?", 1).First(&item).Error
@@ -150,6 +151,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 			image = item.Image
 			totalPrice = totalPrice + float64(orderDetail.PayNum)*item.Price
 			payPrice = payPrice + float64(orderDetail.PayNum)*item.Price
+			cost = cost + float64(orderDetail.PayNum)*item.Cost
 		}
 		// 多规格
 		if item.SpecType == 1 {
@@ -191,6 +193,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 			}
 			totalPrice = totalPrice + float64(orderDetail.PayNum)*attrValue.Price
 			payPrice = payPrice + float64(orderDetail.PayNum)*attrValue.Price
+			cost = cost + float64(orderDetail.PayNum)*attrValue.Cost
 		}
 
 		orderDetail := model.OrderDetail{
@@ -218,6 +221,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 		TotalNum:   totalNum,
 		TotalPrice: totalPrice,
 		PayPrice:   payPrice,
+		Cost:       cost,
 	}).Error
 	if err != nil {
 		tx.Rollback()
