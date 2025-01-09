@@ -12,8 +12,8 @@ import (
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
 
-// 微信 api 字典：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/index.shtml
 // gopay 文档：https://github.com/go-pay/gopay/blob/main/doc/wechat_v3.md
+// 微信 api 字典：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/index.shtml
 
 type WechatPay struct {
 	Config *WechatPayConfig
