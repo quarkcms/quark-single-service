@@ -2,19 +2,22 @@ package pay
 
 import (
 	"context"
+	"errors"
 	"io/ioutil"
 	"log"
+	"strconv"
 
 	"github.com/go-pay/gopay"
 	"github.com/go-pay/gopay/wechat/v3"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
 
+// gopay 文档：https://github.com/go-pay/gopay/blob/main/doc/wechat_v3.md
 // 微信 api 字典：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/index.shtml
 
 type WechatPay struct {
-	config *WechatPayConfig
-	client *wechat.ClientV3
+	Config *WechatPayConfig
+	Client *wechat.ClientV3
 }
 
 type WechatPayConfig struct {
@@ -27,9 +30,9 @@ type WechatPayConfig struct {
 // 初始化微信支付客户端
 //
 // 如果使用默认配置首先需要在 configs 表中添加 name 为 WECHAT_PAY_MCH_ID、WECHAT_PAY_SERIAL_NO、WECHAT_PAY_API_V3_KEY、WECHAT_PAY_PRIVATE_KEY_PATH 的记录
-func NewWechatPay(configs ...WechatPayConfig) *WechatPay {
+func NewWechatPay(param ...WechatPayConfig) *WechatPay {
 	var config WechatPayConfig
-	if len(configs) <= 0 {
+	if len(param) <= 0 {
 		config = WechatPayConfig{
 			MchId:          utils.GetConfig("WECHAT_PAY_MCH_ID"),
 			SerialNo:       utils.GetConfig("WECHAT_PAY_SERIAL_NO"),
@@ -37,7 +40,7 @@ func NewWechatPay(configs ...WechatPayConfig) *WechatPay {
 			PrivateKeyPath: utils.GetConfig("WECHAT_PAY_PRIVATE_KEY_PATH"),
 		}
 	} else {
-		config = configs[0]
+		config = param[0]
 	}
 
 	// 读取私钥内容
@@ -62,8 +65,8 @@ func NewWechatPay(configs ...WechatPayConfig) *WechatPay {
 	}
 
 	return &WechatPay{
-		config: &config,
-		client: client,
+		Config: &config,
+		Client: client,
 	}
 }
 
@@ -77,16 +80,16 @@ func (p *WechatPay) JSAPIPay(param map[string]interface{}) (*wechat.JSAPIPayPara
 	}
 
 	// 拉起 JSAPI 支付
-	perPayResponse, err := p.client.V3TransactionJsapi(context.Background(), bodyMap)
+	perPayResponse, err := p.Client.V3TransactionJsapi(context.Background(), bodyMap)
 	if err != nil {
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, err
+		return nil, errors.New("微信 JSAPI 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
-	return p.client.PaySignOfJSAPI(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
+	return p.Client.PaySignOfJSAPI(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
 }
 
 // 微信小程序支付
@@ -99,16 +102,16 @@ func (p *WechatPay) AppletPay(param map[string]interface{}) (*wechat.AppletParam
 	}
 
 	// 拉起 JSAPI 支付
-	perPayResponse, err := p.client.V3TransactionJsapi(context.Background(), bodyMap)
+	perPayResponse, err := p.Client.V3TransactionJsapi(context.Background(), bodyMap)
 	if err != nil {
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, err
+		return nil, errors.New("微信小程序支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
-	return p.client.PaySignOfApplet(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
+	return p.Client.PaySignOfApplet(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
 }
 
 // 微信 APP 支付
@@ -121,14 +124,76 @@ func (p *WechatPay) AppPay(param map[string]interface{}) (*wechat.AppPayParams, 
 	}
 
 	// 拉起 APP 支付
-	perPayResponse, err := p.client.V3TransactionApp(context.Background(), bodyMap)
+	perPayResponse, err := p.Client.V3TransactionApp(context.Background(), bodyMap)
 	if err != nil {
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, err
+		return nil, errors.New("微信 APP 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
-	return p.client.PaySignOfApp(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
+	return p.Client.PaySignOfApp(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
+}
+
+// 微信 H5 支付
+//
+// 具体传参请参考官方文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_3_1.shtml
+func (p *WechatPay) H5Pay(param map[string]interface{}) (*wechat.H5Url, error) {
+	var bodyMap gopay.BodyMap
+	for key, value := range param {
+		bodyMap.Set(key, value)
+	}
+
+	// 拉起 H5 支付
+	perPayResponse, err := p.Client.V3TransactionH5(context.Background(), bodyMap)
+	if err != nil {
+		return nil, err
+	}
+	if perPayResponse.Code != wechat.Success {
+		return nil, errors.New("微信 H5 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
+	}
+
+	return perPayResponse.Response, nil
+}
+
+// 微信 Native 支付
+//
+// 具体传参请参考官方文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_4_1.shtml
+func (p *WechatPay) NativePay(param map[string]interface{}) (*wechat.Native, error) {
+	var bodyMap gopay.BodyMap
+	for key, value := range param {
+		bodyMap.Set(key, value)
+	}
+
+	// 拉起 Native 支付
+	perPayResponse, err := p.Client.V3TransactionNative(context.Background(), bodyMap)
+	if err != nil {
+		return nil, err
+	}
+	if perPayResponse.Code != wechat.Success {
+		return nil, errors.New("微信 Native 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
+	}
+
+	return perPayResponse.Response, nil
+}
+
+// 微信订单退款
+//
+// 具体传参请参考官方文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_9.shtml
+func (p *WechatPay) Refund(param map[string]interface{}) (*wechat.RefundOrderResponse, error) {
+	var bodyMap gopay.BodyMap
+	for key, value := range param {
+		bodyMap.Set(key, value)
+	}
+
+	refundResponse, err := p.Client.V3Refund(context.Background(), bodyMap)
+	if err != nil {
+		return nil, errors.New("微信订单退款错误：" + err.Error())
+	}
+	if refundResponse.Code != wechat.Success {
+		return nil, errors.New("微信订单退款请求错误，错误码：" + strconv.Itoa(refundResponse.Code) + "，错误信息：" + refundResponse.Error)
+	}
+
+	return refundResponse.Response, nil
 }
