@@ -77,7 +77,7 @@ func (p *BillMarkAction) Data(ctx *quark.Context) map[string]interface{} {
 
 	id, _ := strconv.Atoi(ctx.Query("id").(string))
 
-	bill := service.NewBillService().GetDetailById(id)
+	bill := service.NewBillService().GetInfoById(id)
 
 	return map[string]interface{}{
 		"id":   id,

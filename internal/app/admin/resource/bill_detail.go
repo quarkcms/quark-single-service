@@ -57,7 +57,7 @@ func (p *BillDetail) Init(ctx *quark.Context) interface{} {
 func (p *BillDetail) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 
 	billRecordId, _ := strconv.Atoi(ctx.Query("id").(string))
-	billRecord := service.NewBillRecordService().GetDetailById(billRecordId)
+	billRecord := service.NewBillRecordService().GetInfoById(billRecordId)
 
 	return query.Select(
 		"bills.id",

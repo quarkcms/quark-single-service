@@ -13,8 +13,7 @@ func NewBillRecordService() *BillRecordService {
 }
 
 // 获取详情
-func (p *BillRecordService) GetDetailById(id int) response.BillRecordDetailResp {
-	var billRecord response.BillRecordDetailResp
+func (p *BillRecordService) GetInfoById(id int) (billRecord response.BillRecordDetailResp) {
 	db.Client.Model(model.BillRecord{}).Where("id = ?", id).Last(&billRecord)
 	return billRecord
 }
