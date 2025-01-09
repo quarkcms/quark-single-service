@@ -12,7 +12,7 @@ type Bill struct {
 	Id        int               `json:"id" gorm:"primaryKey;autoIncrement;comment:用户账单id"`         // 用户账单id
 	Uid       int               `json:"uid" gorm:"not null;default:0;comment:用户uid;index:openid"`  // 用户uid
 	LinkId    string            `json:"link_id" gorm:"not null;default:'0';comment:关联id"`          // 关联id
-	BillNo    string            `json:"bill_no" gorm:"not null;default:'';comment:交易单号"`           // 交易单号
+	BillNo    string            `json:"bill_no" gorm:"default:null;comment:交易单号"`                  // 交易单号
 	PM        uint8             `json:"pm" gorm:"not null;default:0;comment:0=支出,1=获得"`            // 0 = 支出 1 = 获得
 	Title     string            `json:"title" gorm:"not null;default:'';comment:账单标题"`             // 账单标题
 	Category  string            `json:"category" gorm:"not null;default:'';comment:明细种类"`          // 明细种类

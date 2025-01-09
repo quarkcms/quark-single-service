@@ -1,7 +1,11 @@
 package service
 
 import (
+	"strconv"
+
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
+	"github.com/quarkcloudio/quark-go/v3/utils/rand"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
@@ -12,6 +16,11 @@ type OrderService struct{}
 
 func NewOrderService() *OrderService {
 	return &OrderService{}
+}
+
+// 生成订单号
+func (p *OrderService) GenerateOrderNo() string {
+	return datetime.DateNow().Format("20060102") + rand.MakeNumeric(6) + strconv.FormatInt(datetime.DateNow().Unix(), 10)
 }
 
 // 根据订单id获取订单信息
