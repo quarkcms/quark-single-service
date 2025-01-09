@@ -2,12 +2,14 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
+	"gorm.io/gorm"
 )
 
 type ItemService struct{}
@@ -172,10 +174,17 @@ func (p *ItemService) GetItemWithDeleteById(itemId int) (data dto.ItemDTO, err e
 	return p.GetItem(itemId, nil, true)
 }
 
-// 根据id获取商品规格值
-func (p *ItemService) GetItemAttrValueById(id interface{}) (data dto.ItemAttrValueDTO, err error) {
+// 获取商品规格值
+func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status interface{}, withDelete bool) (data dto.ItemAttrValueDTO, err error) {
 	itemAttrValue := model.ItemAttrValue{}
-	err = db.Client.Unscoped().Where("id = ?", id).First(&itemAttrValue).Error
+	query := db.Client
+	if withDelete {
+		query.Unscoped()
+	}
+	if status != nil {
+		query.Where("status = ?", status)
+	}
+	err = query.Where("item_id = ?", itemId).Where("id = ?", attrValueId).First(&itemAttrValue).Error
 	data = dto.ItemAttrValueDTO{
 		Id:        itemAttrValue.Id,
 		ItemId:    itemAttrValue.ItemId,
@@ -191,4 +200,56 @@ func (p *ItemService) GetItemAttrValueById(id interface{}) (data dto.ItemAttrVal
 		Status:    itemAttrValue.Status == 1,
 	}
 	return
+}
+
+// 根据id获取商品规格值
+func (p *ItemService) GetItemAttrValueById(itemId int, attrValueId int) (data dto.ItemAttrValueDTO, err error) {
+	return p.GetItemAttrValue(itemId, attrValueId, 1, false)
+}
+
+// 根据id获取商品规格值（包含已删除的）
+func (p *ItemService) GetItemAttrValueWithDeleteById(itemId int, attrValueId int) (data dto.ItemAttrValueDTO, err error) {
+	return p.GetItemAttrValue(itemId, attrValueId, nil, true)
+}
+
+// 检查商品状态
+func (p *ItemService) CheckItemStatus(tx *gorm.DB, itemId int, attrValueId int, payNum int) (status bool, err error) {
+	item, err := p.GetItem(itemId, 1, false)
+	if err != nil {
+		return false, err
+	}
+	if item.Id == 0 {
+		return false, errors.New("商品已下架")
+	}
+	if payNum <= 0 {
+		return false, errors.New("请选择购买商品")
+	}
+	// 单规格
+	if item.SpecType == 0 {
+		if item.Stock <= 0 {
+			return false, errors.New("商品已售完")
+		}
+		if payNum > item.Stock {
+			return false, errors.New("库存不足")
+		}
+	}
+
+	// 多规格
+	if item.SpecType == 1 {
+		attrValue, err := p.GetItemAttrValueById(itemId, attrValueId)
+		if err != nil {
+			return false, err
+		}
+		if attrValue.Id == 0 {
+			return false, errors.New("商品已下架")
+		}
+		if attrValue.Stock <= 0 {
+			return false, errors.New("商品已售完")
+		}
+		if payNum > attrValue.Stock {
+			return false, errors.New("库存不足")
+		}
+	}
+
+	return true, nil
 }

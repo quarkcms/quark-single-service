@@ -1,11 +1,16 @@
 package service
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
+	"github.com/quarkcloudio/quark-go/v3/utils/rand"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto/request"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
+	"github.com/sony/sonyflake"
 )
 
 type OrderService struct{}
@@ -33,7 +38,7 @@ func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (orderDetai
 		}
 
 		// 获取购买商品规格信息
-		attrValueInfo, err := NewItemService().GetItemAttrValueById(v.AttrValueId)
+		attrValueInfo, err := NewItemService().GetItemAttrValueWithDeleteById(v.ItemId, v.AttrValueId)
 		if err != nil {
 			return nil, err
 		}
@@ -57,9 +62,168 @@ func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (orderDetai
 	return
 }
 
-func (p *OrderService) Submit(uid interface{}, submitOrderReq request.SubmitOrderReq) (orderNo string, err error) {
-	order := model.Order{}
-	err = db.Client.Create(&order).Error
+func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (orderNo string, err error) {
+	realname := submitOrderReq.Realname
+	userPhone := submitOrderReq.UserPhone
+	userAddress := submitOrderReq.UserAddress
+	orderDetails := submitOrderReq.OrderDetails
+	if len(orderDetails) < 1 {
+		return "", errors.New("参数错误")
+	}
+
+	// 开始事务
+	tx := db.Client.Begin()
+
+	// 雪花算法生成订单号
+	sf := sonyflake.NewSonyflake(sonyflake.Settings{})
+	getOrderNo, err := sf.NextID()
+	if err != nil {
+		return
+	}
+
+	orderNo = strconv.FormatUint(getOrderNo, 10)
+	order := model.Order{
+		OrderNo:     orderNo,
+		Uid:         uid,
+		Realname:    realname,
+		UserPhone:   userPhone,
+		UserAddress: userAddress,
+		VerifyCode:  rand.MakeNumeric(8),
+	}
+
+	// 创建订单
+	err = tx.Create(&order).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	totalNum := 0
+	totalPrice := 0.00
+	payPrice := 0.00
+	for _, orderDetail := range orderDetails {
+		var item model.Item
+		err = tx.Where("id = ?", 1).First(&item).Error
+		if err != nil {
+			tx.Rollback()
+			return "", err
+		}
+		if item.Id == 0 {
+			tx.Rollback()
+			return "", errors.New("商品不存在")
+		}
+		if item.Status != 1 {
+			tx.Rollback()
+			return "", errors.New("商品已下架")
+		}
+		if orderDetail.PayNum <= 0 {
+			tx.Rollback()
+			return "", errors.New("请选择购买商品")
+		}
+
+		image := ""
+		sku := ""
+		price := 0.00
+		// 计算总量
+		totalNum = totalNum + orderDetail.PayNum
+		// 单规格
+		if item.SpecType == 0 {
+			if item.Stock <= 0 {
+				tx.Rollback()
+				return "", errors.New("商品已售完")
+			}
+			if orderDetail.PayNum > item.Stock {
+				tx.Rollback()
+				return "", errors.New("库存不足")
+			}
+			result := tx.Model(&item).Where("stock = ?", item.Stock).Updates(&model.Item{
+				Stock: item.Stock - orderDetail.PayNum,
+				Sales: item.Sales + orderDetail.PayNum,
+			})
+			if result.RowsAffected == 0 {
+				// 如果没有行被更新，说明库存已经被其他事务修改，回滚事务
+				tx.Rollback()
+				return "", errors.New("购买失败，请重试")
+			}
+			price = item.Price
+			image = item.Image
+			totalPrice = totalPrice + float64(orderDetail.PayNum)*item.Price
+			payPrice = payPrice + float64(orderDetail.PayNum)*item.Price
+		}
+		// 多规格
+		if item.SpecType == 1 {
+			var attrValue model.ItemAttrValue
+			err = tx.Where("id = ?", 1).Where("item_id = ?", item.Id).First(&attrValue).Error
+			if err != nil {
+				tx.Rollback()
+				return "", err
+			}
+			if attrValue.Id == 0 {
+				tx.Rollback()
+				return "", errors.New("商品不存在")
+			}
+			if attrValue.Status != 1 {
+				tx.Rollback()
+				return "", errors.New("商品已下架")
+			}
+			if attrValue.Stock <= 0 {
+				tx.Rollback()
+				return "", errors.New("商品已售完")
+			}
+			if orderDetail.PayNum > attrValue.Stock {
+				tx.Rollback()
+				return "", errors.New("库存不足")
+			}
+			result := tx.Model(&attrValue).Where("stock = ?", attrValue.Stock).Updates(&model.ItemAttrValue{
+				Stock: attrValue.Stock - orderDetail.PayNum,
+				Sales: attrValue.Sales + orderDetail.PayNum,
+			})
+			if result.RowsAffected == 0 {
+				// 如果没有行被更新，说明库存已经被其他事务修改，回滚事务
+				tx.Rollback()
+				return "", errors.New("购买失败，请重试")
+			}
+			sku = attrValue.Suk
+			price = attrValue.Price
+			if attrValue.Image != "" {
+				image = attrValue.Image
+			}
+			totalPrice = totalPrice + float64(orderDetail.PayNum)*attrValue.Price
+			payPrice = payPrice + float64(orderDetail.PayNum)*attrValue.Price
+		}
+
+		orderDetail := model.OrderDetail{
+			OrderId:     order.Id,
+			ItemId:      item.Id,
+			OrderNo:     orderNo,
+			Name:        item.Name,
+			AttrValueId: orderDetail.AttrValueId,
+			Image:       image,
+			SKU:         sku,
+			Price:       price,
+			PayNum:      orderDetail.PayNum,
+		}
+
+		// 创建订单详情
+		err = tx.Create(&orderDetail).Error
+		if err != nil {
+			tx.Rollback()
+			return "", err
+		}
+	}
+
+	// 更新订单金额等信息
+	err = tx.Model(&order).Where("id = ?", order.Id).Updates(&model.Order{
+		TotalNum:   totalNum,
+		TotalPrice: totalPrice,
+		PayPrice:   payPrice,
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
+	tx.Commit()
 	return
 }
 
