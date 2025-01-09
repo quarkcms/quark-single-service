@@ -85,7 +85,7 @@ func (p *WechatPay) JSAPIPay(param map[string]interface{}) (*wechat.JSAPIPayPara
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, errors.New(perPayResponse.Error)
+		return nil, errors.New("微信 JSAPI 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
@@ -107,7 +107,7 @@ func (p *WechatPay) AppletPay(param map[string]interface{}) (*wechat.AppletParam
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, err
+		return nil, errors.New("微信小程序支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
@@ -129,11 +129,53 @@ func (p *WechatPay) AppPay(param map[string]interface{}) (*wechat.AppPayParams, 
 		return nil, err
 	}
 	if perPayResponse.Code != wechat.Success {
-		return nil, err
+		return nil, errors.New("微信 APP 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
 	}
 
 	// 获取拉起支付需要的 Pay Sign
 	return p.Client.PaySignOfApp(utils.GetConfig("WECHAT_APP_ID"), perPayResponse.Response.PrepayId)
+}
+
+// 微信 H5 支付
+//
+// 具体传参请参考官方文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_3_1.shtml
+func (p *WechatPay) H5Pay(param map[string]interface{}) (*wechat.H5Url, error) {
+	var bodyMap gopay.BodyMap
+	for key, value := range param {
+		bodyMap.Set(key, value)
+	}
+
+	// 拉起 H5 支付
+	perPayResponse, err := p.Client.V3TransactionH5(context.Background(), bodyMap)
+	if err != nil {
+		return nil, err
+	}
+	if perPayResponse.Code != wechat.Success {
+		return nil, errors.New("微信 H5 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
+	}
+
+	return perPayResponse.Response, nil
+}
+
+// 微信 Native 支付
+//
+// 具体传参请参考官方文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_4_1.shtml
+func (p *WechatPay) NativePay(param map[string]interface{}) (*wechat.Native, error) {
+	var bodyMap gopay.BodyMap
+	for key, value := range param {
+		bodyMap.Set(key, value)
+	}
+
+	// 拉起 Native 支付
+	perPayResponse, err := p.Client.V3TransactionNative(context.Background(), bodyMap)
+	if err != nil {
+		return nil, err
+	}
+	if perPayResponse.Code != wechat.Success {
+		return nil, errors.New("微信 Native 支付错误，错误码：" + strconv.FormatInt(int64(perPayResponse.Code), 10) + "，错误信息：" + perPayResponse.Error)
+	}
+
+	return perPayResponse.Response, nil
 }
 
 // 微信订单退款
