@@ -11,6 +11,7 @@ import (
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 	"github.com/sony/sonyflake"
+	"gorm.io/gorm"
 )
 
 type OrderService struct{}
@@ -104,7 +105,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 	for _, orderDetail := range orderDetails {
 		var item model.Item
 		err = tx.Where("id = ?", 1).First(&item).Error
-		if err != nil {
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
 			return "", err
 		}
@@ -154,7 +155,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 		if item.SpecType == 1 {
 			var attrValue model.ItemAttrValue
 			err = tx.Where("id = ?", 1).Where("item_id = ?", item.Id).First(&attrValue).Error
-			if err != nil {
+			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 				tx.Rollback()
 				return "", err
 			}
