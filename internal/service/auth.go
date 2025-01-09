@@ -40,7 +40,7 @@ func (p *AuthService) MockLogin() (token string, err error) {
 	if err != nil {
 		return "", err
 	}
-	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60)
+	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 60*24*60)
 }
 
 // 账号密码授权

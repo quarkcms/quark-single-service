@@ -11,12 +11,14 @@ import (
 	miniappservice "github.com/quarkcloudio/quark-go/v3/app/miniapp"
 	adminmodule "github.com/quarkcloudio/quark-go/v3/template/admin"
 	"github.com/quarkcloudio/quark-go/v3/utils/file"
+	"github.com/quarkcloudio/quark-go/v3/utils/rand"
 	"github.com/quarkcloudio/quark-smart/v2/config"
 	"github.com/quarkcloudio/quark-smart/v2/database"
 	appadminservice "github.com/quarkcloudio/quark-smart/v2/internal/app/admin"
 	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/app/tool"
 	"github.com/quarkcloudio/quark-smart/v2/internal/middleware"
 	"github.com/quarkcloudio/quark-smart/v2/internal/router"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/env"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/template"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -39,6 +41,12 @@ func main() {
 		dbName     = config.Mysql.Database
 		dbCharset  = config.Mysql.Charset
 	)
+
+	// 如果appKey为配置时，将初始化AppKey
+	if appKey == "YOUR_APP_KEY" || appKey == "" {
+		appKey = rand.MakeAlphanumeric(50)
+		env.Set("APP_KEY", appKey)
+	}
 
 	// Redis配置信息
 	var redisConfig *quark.RedisConfig
