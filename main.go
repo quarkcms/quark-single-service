@@ -42,7 +42,7 @@ func main() {
 		dbCharset  = config.Mysql.Charset
 	)
 
-	// 如果appKey为配置时，将初始化AppKey
+	// 如果appKey尚未配置时，自动初始化AppKey
 	if appKey == "YOUR_APP_KEY" || appKey == "" {
 		appKey = rand.MakeAlphanumeric(50)
 		env.Set("APP_KEY", appKey)
