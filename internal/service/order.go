@@ -216,6 +216,19 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 		}
 	}
 
+	orderStatus := model.OrderStatus{
+		OrderId:       order.Id,
+		ChangeType:    "create_order",
+		ChangeMessage: "订单生成",
+	}
+
+	// 创建订单详情
+	err = tx.Create(&orderStatus).Error
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
+
 	// 更新订单金额等信息
 	err = tx.Model(&order).Where("id = ?", order.Id).Updates(&model.Order{
 		TotalNum:   totalNum,
