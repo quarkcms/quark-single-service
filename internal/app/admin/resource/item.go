@@ -34,7 +34,7 @@ func (p *Item) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
-// 只查询文章类型
+// 查询类型
 func (p *Item) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 	activeKey := ctx.QueryParam("activeKey")
 	switch activeKey {

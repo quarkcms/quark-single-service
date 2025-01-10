@@ -9,6 +9,7 @@ import (
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
+	"gorm.io/gorm"
 )
 
 type Order struct {
@@ -30,45 +31,69 @@ func (p *Order) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
+// 查询类型
+func (p *Order) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
+	activeKey := ctx.QueryParam("activeKey")
+	switch activeKey {
+	case "all":
+		// 全部
+		query.Where("status", 1)
+	case "pendingPayment":
+		// 待支付
+		query.Where("status", 0)
+	case "pendingShipment":
+		// 待发货（预留）
+		query.Where("status", 0)
+	case "pendingVerify":
+		// 待核销
+		query.Where("status", 0)
+	case "pendingReceipt":
+		// 待收货（预留）
+		query.Where("status", 0)
+	case "pendingReview":
+		// 待评价（预留）
+		query.Where("status", 0)
+	case "completed":
+		// 已完成
+		query.Where("status", 0)
+	case "refunded":
+		// 已退款
+		query.Where("status", 0)
+	case "deleted":
+		// 已删除
+		query.Where("status", 0)
+	}
+	return query
+}
+
 // 菜单
 func (p *Order) Menus(ctx *quark.Context) interface{} {
-	totalNum := service.NewItemService().GetNumByStatus(nil)
-	onSalelNum := service.NewItemService().GetNumByStatus(1)
-	offSaleNum := service.NewItemService().GetNumByStatus(0)
 	return map[string]interface{}{
 		"type": "tab",
 		"items": []map[string]string{
 			{
-				"key":   "0",
-				"label": fmt.Sprintf("全部(%d)", totalNum),
+				"key":   "all",
+				"label": "全部",
 			},
 			{
-				"key":   "1",
-				"label": fmt.Sprintf("待支付(%d)", onSalelNum),
+				"key":   "pendingPayment",
+				"label": fmt.Sprintf("待支付(%d)", 10),
 			},
 			{
-				"key":   "2",
-				"label": fmt.Sprintf("待发货(%d)", offSaleNum),
+				"key":   "pendingVerify",
+				"label": fmt.Sprintf("待核销(%d)", 10),
 			},
 			{
-				"key":   "3",
-				"label": fmt.Sprintf("待核销(%d)", offSaleNum),
+				"key":   "completed",
+				"label": "已完成",
 			},
 			{
-				"key":   "4",
-				"label": fmt.Sprintf("待收货(%d)", offSaleNum),
+				"key":   "refunded",
+				"label": "已退款",
 			},
 			{
-				"key":   "5",
-				"label": fmt.Sprintf("待评价(%d)", offSaleNum),
-			},
-			{
-				"key":   "6",
-				"label": fmt.Sprintf("已完成(%d)", offSaleNum),
-			},
-			{
-				"key":   "7",
-				"label": fmt.Sprintf("已退款(%d)", offSaleNum),
+				"key":   "deleted",
+				"label": "已删除",
 			},
 		},
 	}
