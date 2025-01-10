@@ -1,11 +1,14 @@
 package resource
 
 import (
+	"fmt"
+
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
+	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 )
 
 type Order struct {
@@ -35,8 +38,19 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 
 		field.Text("order_no", "订单号"),
 
-		field.Text("name", "商品信息", func(row map[string]interface{}) {
-			service.NewOrderService().GetOrderDetailsById(row["id"])
+		field.Text("name", "商品信息", func(row map[string]interface{}) interface{} {
+			result := ""
+			orderDetails, err := service.NewOrderService().GetOrderDetailsByOrderId(row["id"])
+			fmt.Println(err)
+			if err != nil {
+				return result
+			}
+			for _, orderDetail := range orderDetails {
+				imageSrc := utils.GetImagePath(orderDetail.Image)
+				imageTag := fmt.Sprintf("<img src='%s' height=50 width=50 />", imageSrc)
+				result = result + imageTag
+			}
+			return result
 		}),
 
 		field.Text("user_info", "用户信息"),

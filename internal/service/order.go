@@ -27,7 +27,7 @@ func (p *OrderService) GetOrderById(orderId interface{}) (order model.Order, err
 }
 
 // 根据订单id获取订单详细信息
-func (p *OrderService) GetOrderDetailsById(orderId interface{}) (orderDetails []dto.OrderDetailDTO, err error) {
+func (p *OrderService) GetOrderDetailsByOrderId(orderId interface{}) (orderDetails []dto.OrderDetailDTO, err error) {
 	list := []model.OrderDetail{}
 	err = db.Client.Where("order_id = ?", orderId).Find(&list).Error
 	for _, v := range list {
@@ -105,7 +105,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 	cost := 0.00
 	for _, orderDetail := range orderDetails {
 		var item model.Item
-		err = tx.Where("id = ?", 1).First(&item).Error
+		err = tx.Where("id = ?", orderDetail.ItemId).First(&item).Error
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
 			return "", err
@@ -156,7 +156,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 		// 多规格
 		if item.SpecType == 1 {
 			var attrValue model.ItemAttrValue
-			err = tx.Where("id = ?", 1).Where("item_id = ?", item.Id).First(&attrValue).Error
+			err = tx.Where("id = ?", orderDetail.AttrValueId).Where("item_id = ?", item.Id).First(&attrValue).Error
 			if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 				tx.Rollback()
 				return "", err
