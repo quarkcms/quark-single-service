@@ -9,6 +9,7 @@ type OrderDetail struct {
 	ItemId      int               `json:"item_id" gorm:"not null;default:0;comment:商品ID;index:item_id"` // 商品ID
 	OrderNo     string            `json:"order_no" gorm:"size:32;not null;comment:订单号"`                 // 订单号
 	Name        string            `json:"name" gorm:"not null;comment:商品名称"`                            // 商品名称
+	Content     string            `json:"content" gorm:"type:text;default:null;comment:商品详情"`           // 商品详情
 	AttrValueId int               `json:"attr_value_id" gorm:"unsigned;default:null;comment:规格属性值id"`   // 规格属性值id
 	Image       string            `json:"image" gorm:"not null;comment:商品图片"`                           // 商品图片
 	SKU         string            `json:"sku" gorm:"not null;comment:商品sku"`                            // 商品sku

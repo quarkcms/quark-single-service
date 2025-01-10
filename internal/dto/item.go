@@ -2,7 +2,7 @@ package dto
 
 type ItemDTO struct {
 	Id          int     `json:"id" gorm:"primaryKey;autoIncrement;comment:商品id"`
-	MerId       int     `json:"mer_id" gorm:"not null;default:0;comment:商户Id(0为总后台管理员创建,不为0的时候是商户后台创建)"`
+	MerchantId  int     `json:"merchant_id" gorm:"not null;default:0;comment:商户Id(0为总后台管理员创建,不为0的时候是商户后台创建)"`
 	Image       string  `json:"image" gorm:"not null;size:256;comment:商品图片"`
 	SliderImage string  `json:"slider_image" gorm:"not null;size:2000;comment:轮播图"`
 	Name        string  `json:"name" gorm:"not null;size:128;comment:商品名称"`

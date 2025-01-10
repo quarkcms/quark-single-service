@@ -143,7 +143,7 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 	err = query.Where("id = ?", itemId).First(&item).Error
 	data = dto.ItemDTO{
 		Id:          item.Id,
-		MerId:       item.MerId,
+		MerchantId:  item.MerchantId,
 		Image:       utils.GetImagePath(item.Image),
 		SliderImage: item.SliderImage,
 		Name:        item.Name,

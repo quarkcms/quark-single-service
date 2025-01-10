@@ -138,15 +138,14 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 				tx.Rollback()
 				return "", errors.New("库存不足")
 			}
-			result := tx.Model(&item).Where("stock = ?", item.Stock).Updates(&model.Item{
-				Stock: item.Stock - orderDetail.PayNum,
-				Sales: item.Sales + orderDetail.PayNum,
-			})
+			result := tx.Model(&item).Where("version = ?", item.Version).Update("stock", item.Stock-orderDetail.PayNum)
 			if result.RowsAffected == 0 {
 				// 如果没有行被更新，说明库存已经被其他事务修改，回滚事务
 				tx.Rollback()
 				return "", errors.New("购买失败，请重试")
 			}
+			// 更新版本号
+			tx.Model(&item).Update("version", item.Version+1)
 			price = item.Price
 			image = item.Image
 			totalPrice = totalPrice + float64(orderDetail.PayNum)*item.Price
@@ -177,15 +176,14 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 				tx.Rollback()
 				return "", errors.New("库存不足")
 			}
-			result := tx.Model(&attrValue).Where("stock = ?", attrValue.Stock).Updates(&model.ItemAttrValue{
-				Stock: attrValue.Stock - orderDetail.PayNum,
-				Sales: attrValue.Sales + orderDetail.PayNum,
-			})
+			result := tx.Model(&attrValue).Where("version = ?", attrValue.Version).Update("stock", attrValue.Stock-orderDetail.PayNum)
 			if result.RowsAffected == 0 {
 				// 如果没有行被更新，说明库存已经被其他事务修改，回滚事务
 				tx.Rollback()
 				return "", errors.New("购买失败，请重试")
 			}
+			// 更新版本号
+			tx.Model(&attrValue).Update("version", attrValue.Version+1)
 			sku = attrValue.Suk
 			price = attrValue.Price
 			if attrValue.Image != "" {
@@ -201,6 +199,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 			ItemId:      item.Id,
 			OrderNo:     orderNo,
 			Name:        item.Name,
+			Content:     item.Content,
 			AttrValueId: orderDetail.AttrValueId,
 			Image:       image,
 			SKU:         sku,

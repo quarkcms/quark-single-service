@@ -30,6 +30,50 @@ func (p *Order) Init(ctx *quark.Context) interface{} {
 	return p
 }
 
+// 菜单
+func (p *Order) Menus(ctx *quark.Context) interface{} {
+	totalNum := service.NewItemService().GetNumByStatus(nil)
+	onSalelNum := service.NewItemService().GetNumByStatus(1)
+	offSaleNum := service.NewItemService().GetNumByStatus(0)
+	return map[string]interface{}{
+		"type": "tab",
+		"items": []map[string]string{
+			{
+				"key":   "0",
+				"label": fmt.Sprintf("全部(%d)", totalNum),
+			},
+			{
+				"key":   "1",
+				"label": fmt.Sprintf("待支付(%d)", onSalelNum),
+			},
+			{
+				"key":   "2",
+				"label": fmt.Sprintf("待发货(%d)", offSaleNum),
+			},
+			{
+				"key":   "3",
+				"label": fmt.Sprintf("待核销(%d)", offSaleNum),
+			},
+			{
+				"key":   "4",
+				"label": fmt.Sprintf("待收货(%d)", offSaleNum),
+			},
+			{
+				"key":   "5",
+				"label": fmt.Sprintf("待评价(%d)", offSaleNum),
+			},
+			{
+				"key":   "6",
+				"label": fmt.Sprintf("已完成(%d)", offSaleNum),
+			},
+			{
+				"key":   "7",
+				"label": fmt.Sprintf("已退款(%d)", offSaleNum),
+			},
+		},
+	}
+}
+
 func (p *Order) Fields(ctx *quark.Context) []interface{} {
 	field := &resource.Field{}
 

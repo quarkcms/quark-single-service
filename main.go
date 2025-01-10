@@ -113,6 +113,11 @@ func main() {
 
 		// 构建本项目数据库
 		database.Handle()
+
+		// 开启高级功能
+		if appPro {
+			database.MiniAppHandle()
+		}
 	}
 
 	// 管理后台中间件
@@ -153,11 +158,6 @@ func main() {
 
 	// 开启高级功能
 	if appPro {
-		// 构建数据库
-		if !file.IsExist("install.lock") {
-			database.MiniAppHandle()
-		}
-
 		// 注册MiniApp路由
 		router.MiniAppRegister(b)
 	}

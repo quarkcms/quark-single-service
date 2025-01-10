@@ -19,6 +19,7 @@ type ItemAttrValue struct {
 	AttrValue string            `json:"attr_value" gorm:"type:text;comment:attr_values 创建更新时的属性对应"`        // attr_values 创建更新时的属性对应
 	IsDefault int               `json:"is_default" gorm:"not null;default:0;comment:是否默认(0:否,1:是)"`        // 是否默认
 	Status    int               `json:"status" gorm:"not null;default:1;comment:状态(0:未上架,1:上架)"`           // 是否上架
+	Version   int               `json:"version" gorm:"default:0;comment:并发版本控制"`
 	CreatedAt datetime.Datetime `json:"created_at"`
 	UpdatedAt datetime.Datetime `json:"updated_at"`
 	DeletedAt gorm.DeletedAt    `json:"deleted_at"`
