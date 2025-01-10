@@ -40,7 +40,7 @@ func (p *AuthService) MockLogin() (token string, err error) {
 	if err != nil {
 		return "", err
 	}
-	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 60*24*60)
+	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 60*24*60*60)
 }
 
 // 账号密码授权
@@ -80,7 +80,7 @@ func (p *AuthService) WechatMPLogin(param dto.WechatAuthDTO) (token string, err 
 		return token, err
 	}
 
-	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60)
+	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60*60)
 }
 
 // 微信网页授权
@@ -115,5 +115,5 @@ func (p *AuthService) WechatOALogin(param dto.WechatAuthDTO) (token string, err 
 		return token, err
 	}
 
-	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60)
+	return appservice.NewAuthService(p.ctx).MakeToken(user, "user", 24*60*60)
 }
