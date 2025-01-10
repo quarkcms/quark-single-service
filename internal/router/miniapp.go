@@ -16,6 +16,9 @@ func MiniAppRegister(b *quark.Engine) {
 	g.POST("/login/index", (&handler.Login{}).Index)
 	g.GET("/login/mock", (&handler.Login{}).Mock)
 
+	// 轮播组
+	g.GET("/banner/index", (&handler.Banner{}).Index) // 轮播列表
+
 	// 需要登录认证路由组
 	ag := b.Group("/api/miniapp", middleware.MiniAppMiddleware)
 	ag.GET("/user/index", (&handler.User{}).Index)

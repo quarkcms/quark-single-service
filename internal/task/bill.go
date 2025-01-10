@@ -87,7 +87,7 @@ func (p *BillTask) MakeBill(period string) {
 		EndDatetime:   endDatetime,
 	}
 	if err := service.NewBillRecordService().CreateBillRecord(billRecord); err != nil {
-		log.Println("创建账单失败，错误信息：", err, "账单信息为：", billRecord)
+		log.Println("创建账单失败，错误信息：", err, " 账单信息为：", billRecord)
 	}
 }
 
