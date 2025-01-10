@@ -8,7 +8,7 @@ import (
 // ItemAttrValue 定义商品属性值表的结构体
 type ItemAttrValue struct {
 	Id        int               `json:"id" gorm:"primaryKey;autoIncrement;comment:主键"`                     // 主键
-	ItemId    int               `json:"item_id" gorm:"not null;comment:商品ID;index:store_id"`               // 商品ID
+	ItemId    int               `json:"item_id" gorm:"not null;comment:商品ID;index:item_id"`                // 商品ID
 	Suk       string            `json:"suk" gorm:"not null;comment:商品属性索引值 (attr_value|attr_value[|....]"` // 商品属性索引值
 	Stock     int               `json:"stock" gorm:"not null;comment:属性对应的库存"`                             // 属性对应的库存
 	Sales     int               `json:"sales" gorm:"not null;default:0;comment:销量"`                        // 销量，默认为0
