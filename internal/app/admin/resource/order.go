@@ -36,22 +36,27 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
-		field.Text("order_no", "订单号"),
+		field.Text("order_no", "订单号").SetColumnWidth(200),
 
 		field.Text("name", "商品信息", func(row map[string]interface{}) interface{} {
 			result := ""
 			orderDetails, err := service.NewOrderService().GetOrderDetailsByOrderId(row["id"])
-			fmt.Println(err)
 			if err != nil {
 				return result
 			}
-			for _, orderDetail := range orderDetails {
-				imageSrc := utils.GetImagePath(orderDetail.Image)
-				imageTag := fmt.Sprintf("<img src='%s' height=50 width=50 />", imageSrc)
-				result = result + imageTag
+			for k, orderDetail := range orderDetails {
+				name := orderDetail.Name
+				image := utils.GetImagePath(orderDetail.Image)
+				style := ""
+				if k != 0 {
+					style = "margin-top:5px"
+				}
+				price := orderDetail.Price * float64(orderDetail.PayNum)
+				title := fmt.Sprintf("商品名称：%s\r\n规格名称：%s\r\n支付价格：¥%.2f\r\n购买数量：%d", name, orderDetail.SKU, price, orderDetail.PayNum)
+				result = result + fmt.Sprintf("<div title='%s' style='%s'><img src='%s' height=40 width=40 /> %s</div>", title, style, image, name)
 			}
 			return result
-		}),
+		}).SetColumnWidth(250),
 
 		field.Text("user_info", "用户信息"),
 
