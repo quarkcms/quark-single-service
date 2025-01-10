@@ -13,9 +13,9 @@ type BillRecord struct {
 	EntryPrice    float64           `json:"entry_price" gorm:"unsigned;not null;default:0.00;comment:收入金额"`  // 收入金额
 	ExpPrice      float64           `json:"exp_price" gorm:"unsigned;not null;default:0.00;comment:支出金额"`    // 支出金额
 	IncomePrice   float64           `json:"income_price" gorm:"unsigned;not null;default:0.00;comment:入账金额"` // 入账金额
-	StartDatetime datetime.Datetime `json:"start_datetime" gorm:"comment:账单周期开始时间"`                          // 账单周期开始时间
-	EndDatetime   datetime.Datetime `json:"end_datetime" gorm:"comment:账单周期结束时间"`                            // 账单周期结束时间
+	StartDatetime datetime.Datetime `json:"start_datetime" gorm:"type:datetime(0);comment:账单周期开始时间"`         // 账单周期开始时间
+	EndDatetime   datetime.Datetime `json:"end_datetime" gorm:"type:datetime(0);comment:账单周期结束时间"`           // 账单周期结束时间
 	Status        int8              `json:"status" gorm:"not null;default:1;comment:状态"`                     // 状态
-	CreatedAt     datetime.Datetime `json:"created_at"`
-	UpdatedAt     datetime.Datetime `json:"updated_at"` // 记录更新时间
+	CreatedAt     datetime.Datetime `json:"created_at" gorm:"type:datetime(0)"`
+	UpdatedAt     datetime.Datetime `json:"updated_at" gorm:"type:datetime(0)"` // 记录更新时间
 }

@@ -60,13 +60,13 @@ func (p *AuthService) WechatMPLogin(param dto.WechatAuthDTO) (token string, err 
 	userService := NewUserService()
 	user := userService.GetInfoByWxOpenid(wechatUser.OpenID)
 	if user.Id > 0 {
-		user, err = userService.Update(dto.SaveUserDTO{
+		user, err = userService.UpdateUser(dto.SaveUserDTO{
 			Id:            user.Id,
 			LastLoginIp:   p.ctx.ClientIP(),
 			LastLoginTime: datetime.Now(),
 		})
 	} else {
-		user, err = userService.Create(dto.SaveUserDTO{
+		user, err = userService.CreateUser(dto.SaveUserDTO{
 			Nickname:      wechatUser.NickName,
 			Sex:           wechatUser.Gender,
 			Avatar:        wechatUser.AvatarURL,
@@ -95,13 +95,13 @@ func (p *AuthService) WechatOALogin(param dto.WechatAuthDTO) (token string, err 
 	userService := NewUserService()
 	user := userService.GetInfoByWxOpenid(wechatUser.OpenID)
 	if user.Id > 0 {
-		user, err = userService.Update(dto.SaveUserDTO{
+		user, err = userService.UpdateUser(dto.SaveUserDTO{
 			Id:            user.Id,
 			LastLoginIp:   p.ctx.ClientIP(),
 			LastLoginTime: datetime.Now(),
 		})
 	} else {
-		user, err = userService.Create(dto.SaveUserDTO{
+		user, err = userService.CreateUser(dto.SaveUserDTO{
 			Nickname:      wechatUser.Nickname,
 			Sex:           int(wechatUser.Sex),
 			Avatar:        wechatUser.HeadImgURL,
