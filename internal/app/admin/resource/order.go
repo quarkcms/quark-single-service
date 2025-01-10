@@ -66,7 +66,7 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 			return fmt.Sprintf("用户ID：%d</br>用户账号：%s</br>用户昵称：%s", userInfo.Id, userInfo.Username, userInfo.Nickname)
 		}),
 
-		field.Text("pay_price", "支付金额"),
+		field.Text("pay_price", "实际支付"),
 
 		field.Text("pay_type", "支付方式"),
 
