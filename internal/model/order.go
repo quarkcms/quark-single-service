@@ -5,6 +5,7 @@ import (
 	appmodel "github.com/quarkcloudio/quark-go/v3/model"
 	"github.com/quarkcloudio/quark-go/v3/service"
 	"github.com/quarkcloudio/quark-go/v3/utils/datetime"
+	"gorm.io/gorm"
 )
 
 // Order 定义订单表的结构体
@@ -39,6 +40,7 @@ type Order struct {
 	OutTradeNo            string            `json:"out_trade_no" gorm:"comment:商户系统内部的订单号,32个字符内、可包含字母"`                                        // 商户系统内部的订单号
 	CreatedAt             datetime.Datetime `json:"created_at" gorm:"type:datetime(0)"`
 	UpdatedAt             datetime.Datetime `json:"updated_at" gorm:"type:datetime(0)"` // 记录更新时间
+	DeletedAt             gorm.DeletedAt    `json:"deleted_at"`
 }
 
 // Seeder
