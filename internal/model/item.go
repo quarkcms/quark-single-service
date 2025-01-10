@@ -14,6 +14,7 @@ type Item struct {
 	Image       string            `json:"image" gorm:"not null;size:256;comment:商品图片"`
 	SliderImage string            `json:"slider_image" gorm:"not null;size:2000;comment:轮播图"`
 	Name        string            `json:"name" gorm:"not null;size:128;comment:商品名称"`
+	IsVirtual   uint8             `json:"is_virtual" gorm:"not null;default:0;comment:是否为虚拟商品"`
 	Keyword     string            `json:"keyword" gorm:"not null;size:256;comment:关键字"`
 	Description string            `json:"description" gorm:"not null;size:256;comment:商品简介"`
 	Content     string            `json:"content" gorm:"type:text;default:null;comment:商品详情"`
@@ -27,9 +28,11 @@ type Item struct {
 	Cost        float64           `json:"cost" gorm:"not null;type:decimal(8,2);default:0.00;comment:成本价"`
 	Attrs       string            `json:"attrs" gorm:"null;comment:商品属性集合数据"`
 	AttrValues  string            `json:"attr_values" gorm:"null;comment:商品属性值集合数据"`
-	Ficti       int               `json:"ficti" gorm:"default:100;comment:虚拟销量"`
+	FictiSales  int               `json:"ficti_sales" gorm:"default:100;comment:虚拟销量"`
 	Views       int               `json:"views" gorm:"default:0;comment:浏览量"`
+	FictiViews  int               `json:"ficti_views" gorm:"default:100;comment:虚拟浏览量"`
 	SpecType    uint8             `json:"spec_type" gorm:"not null;default:0;comment:规格:0单,1多"`
+	VirtualType uint8             `json:"virtual_type" gorm:"not null;default:0;comment:0:普通商品(物流发货),1:卡密/网盘(自动发货),2:优惠券(自动发货),3:虚拟商品(虚拟发货)"`
 	Version     int               `json:"version" gorm:"default:0;comment:并发版本控制"`
 	Deadline    datetime.Datetime `json:"deadline"`
 	CreatedAt   datetime.Datetime `json:"created_at"`

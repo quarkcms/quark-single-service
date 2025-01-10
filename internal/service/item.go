@@ -157,8 +157,9 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 		Stock:       item.Stock,
 		Status:      item.Status,
 		Cost:        item.Cost,
-		Ficti:       item.Ficti,
+		FictiSales:  item.FictiSales,
 		Views:       item.Views,
+		FictiViews:  item.FictiViews,
 		SpecType:    item.SpecType,
 	}
 	return

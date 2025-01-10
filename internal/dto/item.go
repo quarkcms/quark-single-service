@@ -16,8 +16,9 @@ type ItemDTO struct {
 	Stock       int     `json:"stock" gorm:"not null;default:0;comment:库存"`
 	Status      uint8   `json:"status" gorm:"not null;default:1;comment:状态(0:未上架,1:上架)"`
 	Cost        float64 `json:"cost" gorm:"not null;type:decimal(8,2);default:0.00;comment:成本价"`
-	Ficti       int     `json:"ficti" gorm:"default:100;comment:虚拟销量"`
+	FictiSales  int     `json:"ficti_sales" gorm:"default:100;comment:虚拟销量"`
 	Views       int     `json:"views" gorm:"default:0;comment:浏览量"`
+	FictiViews  int     `json:"ficti_views" gorm:"default:0;comment:虚拟浏览量"`
 	SpecType    uint8   `json:"spec_type" gorm:"not null;default:0;comment:规格:0单,1多"`
 }
 

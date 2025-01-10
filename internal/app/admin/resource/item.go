@@ -239,11 +239,11 @@ func (p *Item) Field4(ctx *quark.Context) []interface{} {
 
 	return []interface{}{
 
-		field.Number("views", "浏览量").
+		field.Number("ficti_views", "浏览量").
 			SetDefault(0).
 			OnlyOnForms(),
 
-		field.Number("ficti", "已售数量").
+		field.Number("ficti_sales", "已售数量").
 			SetAddonAfter("件").
 			SetDefault(0),
 
