@@ -36,7 +36,7 @@ func (p *UserService) GetInfoByWxOpenid(wxOpenid string) (user model.User) {
 }
 
 // 新增用户
-func (p *UserService) Create(param dto.SaveUserDTO) (model.User, error) {
+func (p *UserService) CreateUser(param dto.SaveUserDTO) (model.User, error) {
 	user := model.User{
 		Username:      param.Username,
 		Nickname:      param.Nickname,
@@ -61,7 +61,7 @@ func (p *UserService) Create(param dto.SaveUserDTO) (model.User, error) {
 }
 
 // 更新用户
-func (p *UserService) Update(param dto.SaveUserDTO) (model.User, error) {
+func (p *UserService) UpdateUser(param dto.SaveUserDTO) (model.User, error) {
 	user := model.User{
 		Id:            param.Id,
 		Username:      param.Username,

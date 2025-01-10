@@ -21,8 +21,8 @@ type Bill struct {
 	Balance   float64           `json:"balance" gorm:"unsigned;not null;default:0.00;comment:剩余"`  // 剩余
 	Mark      string            `json:"mark" gorm:"not null;default:'';comment:备注"`                // 备注
 	Status    int8              `json:"status" gorm:"not null;default:1;comment:0=待确定,1=有效,-1=无效"` // 0 = 待确定 1 = 有效 -1 = 无效
-	CreatedAt datetime.Datetime `json:"created_at"`
-	UpdatedAt datetime.Datetime `json:"updated_at"` // 记录更新时间
+	CreatedAt datetime.Datetime `json:"created_at" gorm:"type:datetime(0);"`
+	UpdatedAt datetime.Datetime `json:"updated_at" gorm:"type:datetime(0);"` // 记录更新时间
 }
 
 // Seeder

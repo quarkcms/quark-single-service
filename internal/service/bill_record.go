@@ -17,3 +17,8 @@ func (p *BillRecordService) GetInfoById(id int) (billRecord response.BillRecordD
 	db.Client.Model(model.BillRecord{}).Where("id = ?", id).Last(&billRecord)
 	return billRecord
 }
+
+// 创建账单
+func (p *BillRecordService) CreateBillRecord(billRecord model.BillRecord) error {
+	return db.Client.Model(model.BillRecord{}).Create(&billRecord).Error
+}

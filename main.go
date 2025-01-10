@@ -18,6 +18,7 @@ import (
 	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/app/tool"
 	"github.com/quarkcloudio/quark-smart/v2/internal/middleware"
 	"github.com/quarkcloudio/quark-smart/v2/internal/router"
+	"github.com/quarkcloudio/quark-smart/v2/internal/task"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/env"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/template"
 	"gorm.io/driver/mysql"
@@ -161,6 +162,9 @@ func main() {
 		// 注册MiniApp路由
 		router.MiniAppRegister(b)
 	}
+
+	// 注册任务
+	task.RegisterTask()
 
 	// 启动服务
 	b.Run(config.App.Host)

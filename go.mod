@@ -34,6 +34,7 @@ require (
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.9.0 // indirect
 	github.com/go-basic/uuid v1.0.0 // indirect
+	github.com/go-co-op/gocron v1.37.0
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-pay/crypto v0.0.1 // indirect
 	github.com/go-pay/errgroup v0.0.3 // indirect
@@ -49,7 +50,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/gookit/goutil v0.6.11 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/gorilla/sessions v1.2.2 // indirect
@@ -82,6 +83,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -97,6 +99,18 @@ require (
 	github.com/tidwall/gjson v1.14.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/driver/postgres v1.5.2 // indirect
+	gorm.io/driver/sqlserver v1.5.1 // indirect
+	gorm.io/plugin/dbresolver v1.5.3 // indirect
+	modernc.org/libc v1.24.1 // indirect
+	modernc.org/mathutil v1.6.0 // indirect
+	modernc.org/memory v1.6.0 // indirect
+	modernc.org/sqlite v1.24.0 // indirect
+)
+
+require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
@@ -112,15 +126,7 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.7
-	gorm.io/driver/postgres v1.5.2 // indirect
-	gorm.io/driver/sqlserver v1.5.1 // indirect
 	gorm.io/gorm v1.25.12
-	gorm.io/plugin/dbresolver v1.5.3 // indirect
-	modernc.org/libc v1.24.1 // indirect
-	modernc.org/mathutil v1.6.0 // indirect
-	modernc.org/memory v1.6.0 // indirect
-	modernc.org/sqlite v1.24.0 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )
