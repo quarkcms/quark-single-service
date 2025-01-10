@@ -233,7 +233,6 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 	err = tx.Model(&order).Where("id = ?", order.Id).Updates(&model.Order{
 		TotalNum:   totalNum,
 		TotalPrice: totalPrice,
-		PayPrice:   payPrice,
 		Cost:       cost,
 	}).Error
 	if err != nil {

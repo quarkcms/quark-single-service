@@ -58,7 +58,13 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 			return result
 		}).SetColumnWidth(250),
 
-		field.Text("user_info", "用户信息"),
+		field.Text("user_info", "用户信息", func(row map[string]interface{}) interface{} {
+			userInfo, err := service.NewUserService().GetInfoById(row["uid"])
+			if err != nil {
+				return nil
+			}
+			return fmt.Sprintf("用户ID：%d</br>用户账号：%s</br>用户昵称：%s", userInfo.Id, userInfo.Username, userInfo.Nickname)
+		}),
 
 		field.Text("pay_price", "支付金额"),
 
@@ -66,7 +72,24 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 
 		field.Text("pay_time", "支付时间"),
 
-		field.Text("status", "订单状态"),
+		// 0:待发货:,1:待收货,2:已收货,待评价,3:已完成
+		field.Radio("status", "订单状态", func(row map[string]interface{}) interface{} {
+			if row["paid"].(uint8) == 0 {
+				return "未付款"
+			}
+			result := ""
+			switch row["status"] {
+			case 0:
+				result = "待发货"
+			case 1:
+				result = "待收货"
+			case 2:
+				result = "已收货,待评价"
+			case 3:
+				result = "已完成"
+			}
+			return result
+		}),
 	}
 }
 
