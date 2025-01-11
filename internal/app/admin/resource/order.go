@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
+	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/action"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/internal/service"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
@@ -106,6 +107,8 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"),
 
+		field.Hidden("paid", "PAID"),
+
 		field.Text("order_no", "订单号").SetColumnWidth(200),
 
 		field.Text("name", "商品信息", func(row map[string]interface{}) interface{} {
@@ -177,5 +180,11 @@ func (p *Order) Searches(ctx *quark.Context) []interface{} {
 
 // 行为
 func (p *Order) Actions(ctx *quark.Context) []interface{} {
-	return []interface{}{}
+	return []interface{}{
+		action.OrderDelete(),
+		action.OrderBatchDelete(),
+		action.OrderRefund(),
+		action.OrderVerify(),
+		action.OrderBatchVerify(),
+	}
 }

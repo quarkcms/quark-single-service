@@ -398,20 +398,20 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 }
 
 // 删除订单
-func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err error) {
+func (p *OrderService) Delete(uid interface{}, id interface{}) (err error) {
 	order, err := p.GetOrderById(id)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// 后台可删除未付款订单
 	if uid == nil && order.Paid == 1 {
-		return false, errors.New("已付款订单无法删除")
+		return errors.New("已付款订单无法删除")
 	}
 
 	// 用户可删除未付款、已完成订单
 	if order.Paid == 1 && order.Status != 3 {
-		return false, errors.New("已付款未完成订单无法删除")
+		return errors.New("已付款未完成订单无法删除")
 	}
 
 	tx := db.Client.Begin()
@@ -422,7 +422,7 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err
 	err = tx.Where("id = ?", id).Delete(&model.Order{}).Error
 	if err != nil {
 		tx.Rollback()
-		return false, err
+		return err
 	}
 
 	// 删除或取消未付款订单，将归还库存
@@ -431,7 +431,7 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err
 			item, err := NewItemService().GetItem(orderDetail.ItemId, nil, false)
 			if err != nil {
 				tx.Rollback()
-				return false, err
+				return err
 			}
 			// 单规格归还库存
 			if item.SpecType == 0 {
@@ -458,29 +458,36 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err
 		NewItemService().RebuildItemAttrValues(orderDetail.ItemId)
 	}
 
-	return true, nil
+	return nil
 }
 
 // 后台管理员根据订单ID删除订单
-func (p *OrderService) DeleteById(id interface{}) (result bool, err error) {
+func (p *OrderService) DeleteById(id interface{}) (err error) {
 	if id == nil {
-		return false, errors.New("参数错误")
+		return errors.New("参数错误")
 	}
 	return p.Delete(nil, id)
 }
 
 // 前台用户删除或取消订单
-func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (result bool, err error) {
+func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (err error) {
 	if uid == nil || id == nil {
-		return false, errors.New("参数错误")
+		return errors.New("参数错误")
 	}
 	return p.Delete(uid, id)
 }
 
-func (p *OrderService) Refund() {
-	db.Client.Create(&model.Order{})
+// 订单退款
+func (p *OrderService) Refund(orderId interface{}, refundPrice float64) (err error) {
+	return
 }
 
-func (p *OrderService) Verify() {
-	db.Client.Create(&model.Order{})
+// 订单核销
+func (p *OrderService) Verify(orderId interface{}, verifyCode interface{}) (err error) {
+	return
+}
+
+// 管理后台根据订单id核销
+func (p *OrderService) VerifyById(orderId interface{}) (err error) {
+	return p.Verify(orderId, nil)
 }
