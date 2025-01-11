@@ -20,6 +20,55 @@ func NewOrderService() *OrderService {
 	return &OrderService{}
 }
 
+// 根据订单状态获取订单数量
+// all:全部
+// pendingPayment:待支付
+// pendingShipment:待发货（预留）
+// pendingVerify:待核销
+// pendingReceipt:待收货（预留）
+// pendingReview:待评价（预留）
+// completed:已完成
+// refund:退款申请中
+// refunded:已退款
+// deleted:已删除
+func (p *OrderService) GetNumByStatus(status string) int64 {
+	var num int64
+	query := db.Client.Model(&model.Item{})
+	switch status {
+	case "all":
+		// 全部
+	case "pendingPayment":
+		// 待支付
+		query.Where("paid", 0)
+	case "pendingShipment":
+		// 待发货（预留）
+		query.Where("paid", 1).Where("status = ?", 0).Where("shipping_type = ?", 1)
+	case "pendingVerify":
+		// 待核销，到店自提订单需要核销
+		query.Where("paid", 1).Where("status = ?", 0).Where("shipping_type = ?", 2)
+	case "pendingReceipt":
+		// 待收货（预留）
+		query.Where("paid", 1).Where("status = ?", 1).Where("shipping_type = ?", 1)
+	case "pendingReview":
+		// 待评价（预留）
+		query.Where("paid", 1).Where("status = ?", 2)
+	case "completed":
+		// 已完成
+		query.Where("paid", 1).Where("status = ?", 3)
+	case "refund":
+		// 退款申请中
+		query.Where("paid", 1).Where("status = ?", -1)
+	case "refunded":
+		// 已退款
+		query.Where("paid", 1).Where("status = ?", -2)
+	case "deleted":
+		// 已删除
+		query.Unscoped().Where("deleted_at IS NOT NULL")
+	}
+	query.Count(&num)
+	return num
+}
+
 // 根据订单id获取订单信息
 func (p *OrderService) GetOrderById(orderId interface{}) (order model.Order, err error) {
 	err = db.Client.Where("id = ?", orderId).Find(&order).Error

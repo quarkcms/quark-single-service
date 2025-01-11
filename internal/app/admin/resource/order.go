@@ -37,37 +37,38 @@ func (p *Order) Query(ctx *quark.Context, query *gorm.DB) *gorm.DB {
 	switch activeKey {
 	case "all":
 		// 全部
-		query.Where("status", 1)
 	case "pendingPayment":
 		// 待支付
-		query.Where("status", 0)
+		query.Where("paid", 0)
 	case "pendingShipment":
 		// 待发货（预留）
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", 0).Where("shipping_type = ?", 1)
 	case "pendingVerify":
 		// 待核销
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", 0).Where("shipping_type = ?", 2)
 	case "pendingReceipt":
 		// 待收货（预留）
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", 1).Where("shipping_type = ?", 1)
 	case "pendingReview":
 		// 待评价（预留）
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", 2)
 	case "completed":
 		// 已完成
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", 3)
 	case "refunded":
 		// 已退款
-		query.Where("status", 0)
+		query.Where("paid", 1).Where("status = ?", -2)
 	case "deleted":
 		// 已删除
-		query.Where("status", 0)
+		query.Unscoped().Where("deleted_at IS NOT NULL")
 	}
 	return query
 }
 
 // 菜单
 func (p *Order) Menus(ctx *quark.Context) interface{} {
+	orderService := service.NewOrderService()
+
 	return map[string]interface{}{
 		"type": "tab",
 		"items": []map[string]string{
@@ -77,11 +78,11 @@ func (p *Order) Menus(ctx *quark.Context) interface{} {
 			},
 			{
 				"key":   "pendingPayment",
-				"label": fmt.Sprintf("待支付(%d)", 10),
+				"label": fmt.Sprintf("待支付(%d)", orderService.GetNumByStatus("pendingPayment")),
 			},
 			{
 				"key":   "pendingVerify",
-				"label": fmt.Sprintf("待核销(%d)", 10),
+				"label": fmt.Sprintf("待核销(%d)", orderService.GetNumByStatus("pendingVerify")),
 			},
 			{
 				"key":   "completed",
@@ -148,6 +149,10 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 			}
 			result := ""
 			switch row["status"] {
+			case -2:
+				result = "退款成功"
+			case -1:
+				result = "申请退款"
 			case 0:
 				result = "待发货"
 			case 1:
