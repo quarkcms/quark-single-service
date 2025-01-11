@@ -140,7 +140,12 @@ func (p *Order) Fields(ctx *quark.Context) []interface{} {
 			return fmt.Sprintf("用户ID：%d</br>用户账号：%s</br>用户昵称：%s", userInfo.Id, userInfo.Username, userInfo.Nickname)
 		}),
 
-		field.Text("pay_price", "实际支付"),
+		field.Text("pay_price", "实际支付", func(row map[string]interface{}) interface{} {
+			if row["paid"].(uint8) == 0 {
+				return nil
+			}
+			return row["pay_price"]
+		}),
 
 		field.Text("pay_type", "支付方式"),
 

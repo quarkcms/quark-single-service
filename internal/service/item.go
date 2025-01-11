@@ -140,7 +140,7 @@ func (p *ItemService) GetItemAttrs(itemId int) (attrs []dto.AttrDTO, err error) 
 	var list []model.ItemAttr
 	err = db.Client.Where("item_id = ?", itemId).Find(&list).Error
 	for _, v := range list {
-		attrItems := map[string]interface{}{}
+		attrItems := []map[string]interface{}{}
 		err = json.Unmarshal([]byte(v.AttrItems), &attrItems)
 		attrs = append(attrs, dto.AttrDTO{
 			Id:         v.Id,
