@@ -2,7 +2,7 @@ package action
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tpl"
+	"github.com/quarkcloudio/quark-go/v3/template/admin/component/component"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 )
 
@@ -44,7 +44,6 @@ func (p *OrderDetailAction) Init(ctx *quark.Context) interface{} {
 
 // 内容
 func (p *OrderDetailAction) GetBody(ctx *quark.Context) interface{} {
-
 	// 返回数据
-	return (&tpl.Component{}).Init().SetBody("abcd")
+	return component.New().SetComponent("order")
 }
