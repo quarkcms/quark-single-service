@@ -33,7 +33,7 @@ func NewOrderService() *OrderService {
 // deleted:已删除
 func (p *OrderService) GetNumByStatus(status string) int64 {
 	var num int64
-	query := db.Client.Model(&model.Item{})
+	query := db.Client.Model(&model.Order{})
 	switch status {
 	case "all":
 		// 全部
