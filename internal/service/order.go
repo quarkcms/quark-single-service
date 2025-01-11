@@ -329,7 +329,7 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 }
 
 // 删除订单
-func (p *OrderService) Delete() {
+func (p *OrderService) Delete(uid interface{}, id interface{}) {
 	db.Client.Create(&model.Order{})
 }
 
