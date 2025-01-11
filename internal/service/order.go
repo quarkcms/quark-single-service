@@ -20,7 +20,7 @@ func NewOrderService() *OrderService {
 	return &OrderService{}
 }
 
-// 根据订单状态获取订单数量
+// 获取订单数量
 // all:全部
 // pendingPayment:待支付
 // pendingShipment:待发货（预留）
@@ -31,9 +31,12 @@ func NewOrderService() *OrderService {
 // refund:退款申请中
 // refunded:已退款
 // deleted:已删除
-func (p *OrderService) GetNumByStatus(status string) int64 {
+func (p *OrderService) GetNum(uid interface{}, status string) int64 {
 	var num int64
 	query := db.Client.Model(&model.Order{})
+	if uid != nil {
+		query.Where("uid = ?", uid)
+	}
 	switch status {
 	case "all":
 		// 全部
@@ -67,6 +70,39 @@ func (p *OrderService) GetNumByStatus(status string) int64 {
 	}
 	query.Count(&num)
 	return num
+}
+
+// 根据订单状态获取订单数量
+// all:全部
+// pendingPayment:待支付
+// pendingShipment:待发货（预留）
+// pendingVerify:待核销
+// pendingReceipt:待收货（预留）
+// pendingReview:待评价（预留）
+// completed:已完成
+// refund:退款申请中
+// refunded:已退款
+// deleted:已删除
+func (p *OrderService) GetNumByStatus(status string) int64 {
+	return p.GetNum(nil, status)
+}
+
+// 根据用户ID、订单状态获取订单数量
+// all:全部
+// pendingPayment:待支付
+// pendingShipment:待发货（预留）
+// pendingVerify:待核销
+// pendingReceipt:待收货（预留）
+// pendingReview:待评价（预留）
+// completed:已完成
+// refund:退款申请中
+// refunded:已退款
+// deleted:已删除
+func (p *OrderService) GetNumByUidAndStatus(uid interface{}, status string) (num int64, err error) {
+	if uid == nil {
+		return 0, errors.New("参数错误")
+	}
+	return p.GetNum(uid, status), nil
 }
 
 // 根据订单id获取订单信息
@@ -290,6 +326,11 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 
 	tx.Commit()
 	return
+}
+
+// 删除订单
+func (p *OrderService) Delete() {
+	db.Client.Create(&model.Order{})
 }
 
 func (p *OrderService) Refund() {
