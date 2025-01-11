@@ -70,7 +70,7 @@ func (p *OrderDeleteAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
-			err = service.NewOrderService().DeleteById(idInt)
+			err = service.NewOrderService().DeleteBySystem(idInt)
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
@@ -80,7 +80,7 @@ func (p *OrderDeleteAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}
-		err = service.NewOrderService().DeleteById(idInt)
+		err = service.NewOrderService().DeleteBySystem(idInt)
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}

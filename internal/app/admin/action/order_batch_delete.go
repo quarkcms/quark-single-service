@@ -70,14 +70,14 @@ func (p *OrderBatchDeleteAction) Handle(ctx *quark.Context, query *gorm.DB) erro
 			if err != nil {
 				return ctx.JSON(200, message.Error(err.Error()))
 			}
-			service.NewOrderService().DeleteById(idInt)
+			service.NewOrderService().DeleteBySystem(idInt)
 		}
 	} else {
 		idInt, err := strconv.Atoi(id.(string))
 		if err != nil {
 			return ctx.JSON(200, message.Error(err.Error()))
 		}
-		service.NewOrderService().DeleteById(idInt)
+		service.NewOrderService().DeleteBySystem(idInt)
 	}
 
 	return ctx.JSON(200, message.Success("操作成功"))

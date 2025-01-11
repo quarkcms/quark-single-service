@@ -417,16 +417,22 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (err error) {
 
 	tx := db.Client.Begin()
 	if uid != nil {
-		tx.Where("uid = ?", uid)
+		err = tx.Where("uid = ?", uid).Where("id = ?", id).Delete(&model.Order{}).Error
+	} else {
+		err = tx.Model(&model.Order{}).Where("id = ?", id).Update("is_system_del", 1).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		err = tx.Where("id = ?", id).Delete(&model.Order{}).Error
 	}
 
-	err = tx.Where("id = ?", id).Delete(&model.Order{}).Error
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	// 删除或取消未付款订单，将归还库存
+	// 删除未付款订单，将归还库存
 	if order.Paid == 0 {
 		for _, orderDetail := range order.OrderDetails {
 			item, err := NewItemService().GetItem(orderDetail.ItemId, nil, false)
@@ -463,14 +469,14 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (err error) {
 }
 
 // 后台管理员根据订单ID删除订单
-func (p *OrderService) DeleteById(id interface{}) (err error) {
+func (p *OrderService) DeleteBySystem(id interface{}) (err error) {
 	if id == nil {
 		return errors.New("参数错误")
 	}
 	return p.Delete(nil, id)
 }
 
-// 前台用户删除或取消订单
+// 前台用户删除订单
 func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (err error) {
 	if uid == nil || id == nil {
 		return errors.New("参数错误")
