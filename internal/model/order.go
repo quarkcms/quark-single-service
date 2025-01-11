@@ -32,7 +32,7 @@ type Order struct {
 	RefundPrice           float64           `json:"refund_price" gorm:"not null;default:0.00;comment:退款金额"`                                     // 退款金额
 	Remark                string            `json:"remark" gorm:"comment:管理员备注"`                                                                // 管理员备注
 	MerchantId            int               `json:"merchant_id" gorm:"not null;default:0;comment:预留字段:商户ID"`                                    // 预留字段:商户ID
-	IsCheck               uint8             `json:"is_check" gorm:"not null;default:0;comment:是否已核销"`                                           // 是否已核销
+	IsMerchantCheck       uint8             `json:"is_merchant_check" gorm:"not null;default:0;comment:是否由商户审核"`                                // 是否已核销
 	Cost                  float64           `json:"cost" gorm:"not null;comment:成本价"`                                                           // 成本价
 	VerifyCode            string            `json:"verify_code" gorm:"not null;default:'';comment:核销码"`                                         // 核销码
 	ShippingType          uint8             `json:"shipping_type" gorm:"not null;default:1;comment:配送方式:1=快递,2=门店自提"`                           // 配送方式
