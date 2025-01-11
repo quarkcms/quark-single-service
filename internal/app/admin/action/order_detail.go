@@ -33,6 +33,9 @@ func (p *OrderDetailAction) Init(ctx *quark.Context) interface{} {
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 
+	// 宽度
+	p.Width = 900
+
 	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
 
