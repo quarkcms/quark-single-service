@@ -186,5 +186,6 @@ func (p *Order) Actions(ctx *quark.Context) []interface{} {
 		action.OrderRefund(),
 		action.OrderVerify(),
 		action.OrderBatchVerify(),
+		action.OrderDetail(),
 	}
 }
