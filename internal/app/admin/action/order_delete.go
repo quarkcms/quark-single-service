@@ -24,7 +24,7 @@ func OrderDelete() *OrderDeleteAction {
 func (p *OrderDeleteAction) Init(ctx *quark.Context) interface{} {
 
 	// 设置按钮文字
-	p.Name = "<%= (paid==0 && '删除') %>"
+	p.Name = "<%= (paid==0 && '删除订单') %>"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"

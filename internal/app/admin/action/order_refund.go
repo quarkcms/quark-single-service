@@ -24,7 +24,7 @@ func OrderRefund() *OrderRefundAction {
 func (p *OrderRefundAction) Init(ctx *quark.Context) interface{} {
 
 	// 设置按钮文字
-	p.Name = "退款"
+	p.Name = "立即退款"
 
 	// 类型
 	p.Type = "link"

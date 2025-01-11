@@ -24,7 +24,7 @@ func OrderVerify() *OrderVerifyAction {
 func (p *OrderVerifyAction) Init(ctx *quark.Context) interface{} {
 
 	// 设置按钮文字
-	p.Name = "<%= (paid==0 && '核销') %>"
+	p.Name = "<%= (paid==0 && '立即核销') %>"
 
 	// 设置按钮类型,primary | ghost | dashed | link | text | default
 	p.Type = "link"
@@ -56,11 +56,6 @@ func (p *OrderVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) error {
 	id := ctx.Query("id")
 	if id == "" {
 		return ctx.JSON(200, message.Error("参数错误！"))
-	}
-
-	err := query.Delete("").Error
-	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
 	}
 
 	ids := strings.Split(id.(string), ",")

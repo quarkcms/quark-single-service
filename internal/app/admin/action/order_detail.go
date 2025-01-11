@@ -2,7 +2,6 @@ package action
 
 import (
 	"github.com/quarkcloudio/quark-go/v3"
-	"github.com/quarkcloudio/quark-go/v3/template/admin/component/action"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/component/tpl"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource/actions"
 )
@@ -20,7 +19,7 @@ func OrderDetail() *OrderDetailAction {
 func (p *OrderDetailAction) Init(ctx *quark.Context) interface{} {
 
 	// 文字
-	p.Name = "详情"
+	p.Name = "订单详情"
 
 	// 类型
 	p.Type = "link"
@@ -44,18 +43,5 @@ func (p *OrderDetailAction) Init(ctx *quark.Context) interface{} {
 func (p *OrderDetailAction) GetBody(ctx *quark.Context) interface{} {
 
 	// 返回数据
-	return (&tpl.Component{}).SetBody("abcd")
-}
-
-// 弹窗行为
-func (p *OrderDetailAction) GetActions(ctx *quark.Context) []interface{} {
-
-	return []interface{}{
-		(&action.Component{}).
-			Init().
-			SetLabel("关闭").
-			SetReload("table").
-			SetActionType("cancel").
-			SetType("primary", false),
-	}
+	return (&tpl.Component{}).Init().SetBody("abcd")
 }

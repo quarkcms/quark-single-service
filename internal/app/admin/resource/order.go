@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/quarkcloudio/quark-go/v3"
+	"github.com/quarkcloudio/quark-go/v3/app/admin/actions"
 	"github.com/quarkcloudio/quark-go/v3/app/admin/searches"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/resource"
 	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/action"
@@ -181,11 +182,13 @@ func (p *Order) Searches(ctx *quark.Context) []interface{} {
 // 行为
 func (p *Order) Actions(ctx *quark.Context) []interface{} {
 	return []interface{}{
-		action.OrderDelete(),
 		action.OrderBatchDelete(),
-		action.OrderRefund(),
-		action.OrderVerify(),
 		action.OrderBatchVerify(),
-		action.OrderDetail(),
+		actions.More("更多", []interface{}{
+			action.OrderDelete(),
+			action.OrderRefund(),
+			action.OrderVerify(),
+			action.OrderDetail(),
+		}),
 	}
 }

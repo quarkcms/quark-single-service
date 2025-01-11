@@ -58,11 +58,6 @@ func (p *OrderBatchVerifyAction) Handle(ctx *quark.Context, query *gorm.DB) erro
 		return ctx.JSON(200, message.Error("参数错误！"))
 	}
 
-	err := query.Delete("").Error
-	if err != nil {
-		return ctx.JSON(200, message.Error(err.Error()))
-	}
-
 	ids := strings.Split(id.(string), ",")
 	if len(ids) > 0 {
 		for _, v := range ids {
