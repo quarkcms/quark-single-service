@@ -28,8 +28,8 @@ type OrderDTO struct {
 	RefundReasonTime      datetime.Datetime `json:"refund_reason_time"`      // 退款时间
 	RefundPrice           float64           `json:"refund_price"`            // 退款金额
 	Remark                string            `json:"remark"`                  // 管理员备注
-	MerId                 int               `json:"mer_id"`                  // 商户ID
-	IsMerCheck            uint8             `json:"is_mer_check"`            // 是否商户审核
+	MerchantId            int               `json:"merchant_id"`             // 预留字段:商户ID
+	IsMerchantCheck       uint8             `json:"is_merchant_check"`       // 是否已核销
 	Cost                  float64           `json:"cost"`                    // 成本价
 	VerifyCode            string            `json:"verify_code"`             // 核销码
 	ShippingType          uint8             `json:"shipping_type"`           // 配送方式
@@ -40,16 +40,16 @@ type OrderDTO struct {
 
 // 订单详情信息
 type OrderDetailDTO struct {
-	Id            int              `json:"id"`            // 主键
-	OrderId       int              `json:"order_id"`      // 订单id
-	ItemId        int              `json:"item_id"`       // 商品ID
-	ItemInfo      ItemDTO          `json:"itemInfo"`      // 商品信息
-	OrderNo       string           `json:"order_no"`      // 订单号
-	Name          string           `json:"name"`          // 商品名称
-	AttrValueId   int              `json:"attr_value_id"` // 规格属性值id
-	AttrValueInfo ItemAttrValueDTO `json:"attrInfo"`      // 商品规格信息
-	Image         string           `json:"image"`         // 商品图片
-	SKU           string           `json:"sku"`           // 商品sku
-	Price         float64          `json:"price"`         // 商品价格
-	PayNum        int              `json:"pay_num"`       // 购买数量
+	Id            int          `json:"id"`            // 主键
+	OrderId       int          `json:"order_id"`      // 订单id
+	ItemId        int          `json:"item_id"`       // 商品ID
+	ItemInfo      ItemDTO      `json:"itemInfo"`      // 商品信息
+	OrderNo       string       `json:"order_no"`      // 订单号
+	Name          string       `json:"name"`          // 商品名称
+	AttrValueId   int          `json:"attr_value_id"` // 规格属性值id
+	AttrValueInfo AttrValueDTO `json:"attrInfo"`      // 商品规格信息
+	Image         string       `json:"image"`         // 商品图片
+	SKU           string       `json:"sku"`           // 商品sku
+	Price         float64      `json:"price"`         // 商品价格
+	PayNum        int          `json:"pay_num"`       // 购买数量
 }

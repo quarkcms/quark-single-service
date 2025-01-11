@@ -18,6 +18,7 @@ func NewItemService() *ItemService {
 	return &ItemService{}
 }
 
+// 根据状态获取商品数量
 func (p *ItemService) GetNumByStatus(status interface{}) int64 {
 	var num int64
 	query := db.Client.Model(&model.Item{})
@@ -28,12 +29,14 @@ func (p *ItemService) GetNumByStatus(status interface{}) int64 {
 	return num
 }
 
+// 根据商品Id上传商品属性
 func (p *ItemService) DeleteItemAttrsByItemId(itemId interface{}) {
 	db.Client.
 		Where("item_id = ?", itemId).
 		Delete(&model.ItemAttr{})
 }
 
+// 跟进商品id创建或更新商品属性
 func (p *ItemService) StoreOrUpdateItemAttrs(itemId int, attrs interface{}) {
 	p.DeleteItemAttrsByItemId(itemId)
 	if attrs == nil {
@@ -65,6 +68,7 @@ func (p *ItemService) StoreOrUpdateItemAttr(itemId int, attrName string, attrIte
 	db.Client.Create(&itemAttr)
 }
 
+// 根据商品id删除商品规格
 func (p *ItemService) DeleteItemAttrValuesByItemId(itemId interface{}, notInSuks []interface{}) {
 	db.Client.
 		Where("item_id = ?", itemId).
@@ -72,17 +76,18 @@ func (p *ItemService) DeleteItemAttrValuesByItemId(itemId interface{}, notInSuks
 		Delete(&model.ItemAttrValue{})
 }
 
+// 创建或更新商品规格
 func (p *ItemService) StoreOrUpdateItemAttrValues(itemId int, attrValues interface{}) {
 	if attrValues == nil {
 		p.DeleteItemAttrValuesByItemId(itemId, []interface{}{})
 		return
 	}
 
-	items := []dto.ItemAttrValueDTO{}
+	items := []dto.AttrValueDTO{}
 	mapstructure.Decode(attrValues, &items)
 	suks := []interface{}{}
 	for _, item := range attrValues.([]interface{}) {
-		i := dto.ItemAttrValueDTO{}
+		i := dto.AttrValueDTO{}
 		mapstructure.Decode(item, &i)
 		suks = append(suks, i.Suk)
 		i.AttrValue = item.(map[string]interface{})["attr_value"]
@@ -93,7 +98,7 @@ func (p *ItemService) StoreOrUpdateItemAttrValues(itemId int, attrValues interfa
 	p.DeleteItemAttrValuesByItemId(itemId, suks)
 }
 
-func (p *ItemService) StoreOrUpdateItemAttrValue(itemId int, suk string, attrValue dto.ItemAttrValueDTO) {
+func (p *ItemService) StoreOrUpdateItemAttrValue(itemId int, suk string, attrValue dto.AttrValueDTO) {
 	getItemAttrValue := model.ItemAttrValue{}
 	db.Client.Where("item_id = ?", itemId).Where("suk = ?", suk).First(&getItemAttrValue)
 	imageJsonData, _ := json.Marshal(attrValue.Image)
@@ -130,6 +135,49 @@ func (p *ItemService) StoreOrUpdateItemAttrValue(itemId int, suk string, attrVal
 	}
 }
 
+// 获取商品属性
+func (p *ItemService) GetItemAttrs(itemId int) (attrs []dto.AttrDTO, err error) {
+	var list []model.ItemAttr
+	err = db.Client.Where("item_id = ?", itemId).Find(&list).Error
+	for _, v := range list {
+		attrItems := map[string]interface{}{}
+		err = json.Unmarshal([]byte(v.AttrItems), &attrItems)
+		attrs = append(attrs, dto.AttrDTO{
+			Id:         v.Id,
+			ItemId:     v.ItemId,
+			AttrName:   v.AttrName,
+			AttrValues: v.AttrValues,
+			AttrItems:  attrItems,
+		})
+	}
+	return
+}
+
+// 获取商品属性值
+func (p *ItemService) GetItemAttrValues(itemId int) (attrValues []dto.AttrValueDTO, err error) {
+	var list []model.ItemAttrValue
+	err = db.Client.Where("item_id = ?", itemId).Find(&list).Error
+	for _, v := range list {
+		itemAttrValue := map[string]interface{}{}
+		err = json.Unmarshal([]byte(v.AttrValue), &itemAttrValue)
+		attrValues = append(attrValues, dto.AttrValueDTO{
+			Id:        v.Id,
+			ItemId:    v.ItemId,
+			Suk:       v.Suk,
+			Stock:     v.Stock,
+			Sales:     v.Sales,
+			Price:     v.Price,
+			Image:     utils.GetImagePath(v.Image),
+			Cost:      v.Cost,
+			OtPrice:   v.OtPrice,
+			AttrValue: itemAttrValue,
+			IsDefault: v.IsDefault == 1,
+			Status:    v.Status == 1,
+		})
+	}
+	return
+}
+
 // 获取商品
 func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (data dto.ItemDTO, err error) {
 	item := model.Item{}
@@ -141,6 +189,19 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 		query.Where("status = ?", status)
 	}
 	err = query.Where("id = ?", itemId).First(&item).Error
+	if err != nil {
+		return
+	}
+	// 获取商品属性
+	attrs, err := p.GetItemAttrs(itemId)
+	if err != nil {
+		return
+	}
+	// 获取商品属性值
+	attrValues, err := p.GetItemAttrValues(itemId)
+	if err != nil {
+		return
+	}
 	data = dto.ItemDTO{
 		Id:          item.Id,
 		MerchantId:  item.MerchantId,
@@ -161,6 +222,8 @@ func (p *ItemService) GetItem(itemId int, status interface{}, withDelete bool) (
 		Views:       item.Views,
 		FictiViews:  item.FictiViews,
 		SpecType:    item.SpecType,
+		Attrs:       attrs,
+		AttrValues:  attrValues,
 	}
 	return
 }
@@ -176,7 +239,7 @@ func (p *ItemService) GetItemWithDeleteById(itemId int) (data dto.ItemDTO, err e
 }
 
 // 获取商品规格值
-func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status interface{}, withDelete bool) (data dto.ItemAttrValueDTO, err error) {
+func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status interface{}, withDelete bool) (data dto.AttrValueDTO, err error) {
 	itemAttrValue := model.ItemAttrValue{}
 	query := db.Client
 	if withDelete {
@@ -186,7 +249,7 @@ func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status inter
 		query.Where("status = ?", status)
 	}
 	err = query.Where("item_id = ?", itemId).Where("id = ?", attrValueId).First(&itemAttrValue).Error
-	data = dto.ItemAttrValueDTO{
+	data = dto.AttrValueDTO{
 		Id:        itemAttrValue.Id,
 		ItemId:    itemAttrValue.ItemId,
 		Suk:       itemAttrValue.Suk,
@@ -204,12 +267,12 @@ func (p *ItemService) GetItemAttrValue(itemId int, attrValueId int, status inter
 }
 
 // 根据id获取商品规格值
-func (p *ItemService) GetItemAttrValueById(itemId int, attrValueId int) (data dto.ItemAttrValueDTO, err error) {
+func (p *ItemService) GetItemAttrValueById(itemId int, attrValueId int) (data dto.AttrValueDTO, err error) {
 	return p.GetItemAttrValue(itemId, attrValueId, 1, false)
 }
 
 // 根据id获取商品规格值（包含已删除的）
-func (p *ItemService) GetItemAttrValueWithDeleteById(itemId int, attrValueId int) (data dto.ItemAttrValueDTO, err error) {
+func (p *ItemService) GetItemAttrValueWithDeleteById(itemId int, attrValueId int) (data dto.AttrValueDTO, err error) {
 	return p.GetItemAttrValue(itemId, attrValueId, nil, true)
 }
 
@@ -253,4 +316,25 @@ func (p *ItemService) CheckItemStatus(tx *gorm.DB, itemId int, attrValueId int, 
 	}
 
 	return true, nil
+}
+
+// 重建items表attr_values字段值
+func (p *ItemService) RebuildItemAttrValues(itemId int) (err error) {
+	item, err := NewItemService().GetItem(itemId, nil, false)
+	if err != nil {
+		return err
+	}
+	if item.SpecType != 1 {
+		return
+	}
+	attrValues := item.AttrValues
+	for k, attrValue := range attrValues {
+		attrValue.Image = attrValue.ImageJson
+		attrValues[k] = attrValue
+	}
+	attrValuesJsonData, err := json.Marshal(attrValues)
+	if err != nil {
+		return
+	}
+	return db.Client.Model(&model.Item{}).Where("id = ?", itemId).Update("attr_values", string(attrValuesJsonData)).Error
 }

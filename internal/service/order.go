@@ -105,10 +105,70 @@ func (p *OrderService) GetNumByUidAndStatus(uid interface{}, status string) (num
 	return p.GetNum(uid, status), nil
 }
 
-// 根据订单id获取订单信息
-func (p *OrderService) GetOrderById(orderId interface{}) (order model.Order, err error) {
-	err = db.Client.Where("id = ?", orderId).Find(&order).Error
+// 获取订单信息
+func (p *OrderService) GetOrder(uid, orderId interface{}) (orderDto dto.OrderDTO, err error) {
+	order := model.Order{}
+	query := db.Client
+	if uid != nil {
+		query.Where("uid = ?", uid)
+	}
+	err = query.Where("id = ?", orderId).First(&order).Error
+	if err != nil {
+		return
+	}
+	orderDetails, err := p.GetOrderDetailsByOrderId(orderId)
+	if err != nil {
+		return
+	}
+	orderDto = dto.OrderDTO{
+		Id:                    order.Id,
+		OrderNo:               order.OrderNo,
+		Uid:                   order.Uid,
+		Realname:              order.Realname,
+		UserPhone:             order.UserPhone,
+		UserAddress:           order.UserAddress,
+		TotalNum:              order.TotalNum,
+		TotalPrice:            order.TotalPrice,
+		PayPrice:              order.PayPrice,
+		Paid:                  order.Paid,
+		PayTime:               order.PayTime,
+		PayType:               order.PayType,
+		OrderDetails:          orderDetails,
+		Status:                order.Status,
+		RefundStatus:          order.RefundStatus,
+		RefundReasonImg:       order.RefundReasonImg,
+		RefundReasonExplain:   order.RefundReasonExplain,
+		RefundReason:          order.RefundReason,
+		RefundRejectionReason: order.RefundRejectionReason,
+		RefundReasonTime:      order.RefundReasonTime,
+		RefundPrice:           order.RefundPrice,
+		Remark:                order.Remark,
+		MerchantId:            order.MerchantId,
+		IsMerchantCheck:       order.IsMerchantCheck,
+		Cost:                  order.Cost,
+		VerifyCode:            order.VerifyCode,
+		ShippingType:          order.ShippingType,
+		ClerkId:               order.Id,
+		CreatedAt:             order.CreatedAt,
+		UpdatedAt:             order.UpdatedAt,
+	}
 	return
+}
+
+// 根据ID获取订单信息
+func (p *OrderService) GetOrderById(orderId interface{}) (orderDto dto.OrderDTO, err error) {
+	if orderId == nil {
+		return orderDto, errors.New("参数错误")
+	}
+	return p.GetOrder(nil, orderId)
+}
+
+// 获取用户订单信息
+func (p *OrderService) GetUserOrder(uid, orderId interface{}) (orderDto dto.OrderDTO, err error) {
+	if uid == nil || orderId == nil {
+		return orderDto, errors.New("参数错误")
+	}
+	return p.GetOrder(uid, orderId)
 }
 
 // 根据订单id获取订单详细信息
@@ -324,13 +384,97 @@ func (p *OrderService) Submit(uid int, submitOrderReq request.SubmitOrderReq) (o
 		return "", err
 	}
 
-	tx.Commit()
+	err = tx.Commit().Error
+	if err != nil {
+		return
+	}
+
+	// 重建items表attr_values字段值
+	for _, orderDetail := range orderDetails {
+		NewItemService().RebuildItemAttrValues(orderDetail.ItemId)
+	}
+
 	return
 }
 
 // 删除订单
-func (p *OrderService) Delete(uid interface{}, id interface{}) {
-	db.Client.Create(&model.Order{})
+func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err error) {
+	order, err := p.GetOrderById(id)
+	if err != nil {
+		return false, err
+	}
+
+	// 后台可删除未付款订单
+	if uid == nil && order.Paid == 1 {
+		return false, errors.New("已付款订单无法删除")
+	}
+
+	// 用户可删除未付款、已完成订单
+	if order.Paid == 1 && order.Status != 3 {
+		return false, errors.New("已付款未完成订单无法删除")
+	}
+
+	tx := db.Client.Begin()
+	if uid != nil {
+		tx.Where("uid = ?", uid)
+	}
+
+	err = tx.Where("id = ?", id).Delete(&model.Order{}).Error
+	if err != nil {
+		tx.Rollback()
+		return false, err
+	}
+
+	// 删除或取消未付款订单，将归还库存
+	if order.Paid == 0 {
+		for _, orderDetail := range order.OrderDetails {
+			item, err := NewItemService().GetItem(orderDetail.ItemId, nil, false)
+			if err != nil {
+				tx.Rollback()
+				return false, err
+			}
+			// 单规格归还库存
+			if item.SpecType == 0 {
+				tx.Model(&model.Item{}).Where("id = ?", item.Id).Update("stock", item.Stock+orderDetail.PayNum)
+			}
+			// 多规格归还库存
+			if item.SpecType == 1 {
+				var attrValue model.ItemAttrValue
+				tx.Where("id = ?", orderDetail.AttrValueId).Where("item_id = ?", item.Id).First(&attrValue)
+				if attrValue.Id != 0 {
+					tx.Model(&model.ItemAttrValue{}).Where("id = ?", orderDetail.AttrValueId).Update("stock", attrValue.Stock-orderDetail.PayNum)
+				}
+			}
+		}
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		return
+	}
+
+	// 重建items表attr_values字段值
+	for _, orderDetail := range order.OrderDetails {
+		NewItemService().RebuildItemAttrValues(orderDetail.ItemId)
+	}
+
+	return true, nil
+}
+
+// 根据订单ID删除订单
+func (p *OrderService) DeleteById(id interface{}) (result bool, err error) {
+	if id == nil {
+		return false, errors.New("参数错误")
+	}
+	return p.Delete(nil, id)
+}
+
+// 用户删除或取消订单
+func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (result bool, err error) {
+	if uid == nil || id == nil {
+		return false, errors.New("参数错误")
+	}
+	return p.Delete(uid, id)
 }
 
 func (p *OrderService) Refund() {
