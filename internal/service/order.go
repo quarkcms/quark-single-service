@@ -461,7 +461,7 @@ func (p *OrderService) Delete(uid interface{}, id interface{}) (result bool, err
 	return true, nil
 }
 
-// 根据订单ID删除订单
+// 后台管理员根据订单ID删除订单
 func (p *OrderService) DeleteById(id interface{}) (result bool, err error) {
 	if id == nil {
 		return false, errors.New("参数错误")
@@ -469,7 +469,7 @@ func (p *OrderService) DeleteById(id interface{}) (result bool, err error) {
 	return p.Delete(nil, id)
 }
 
-// 用户删除或取消订单
+// 前台用户删除或取消订单
 func (p *OrderService) DeleteByUser(uid interface{}, id interface{}) (result bool, err error) {
 	if uid == nil || id == nil {
 		return false, errors.New("参数错误")
