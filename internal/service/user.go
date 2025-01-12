@@ -85,3 +85,8 @@ func (p *UserService) UpdateUser(param dto.SaveUserDTO) (model.User, error) {
 
 	return user, nil
 }
+
+// 删除用户
+func (p *UserService) DeleteUser(id int) error {
+	return db.Client.Model(model.User{}).Where("id = ?", id).Delete(&model.User{}).Error
+}

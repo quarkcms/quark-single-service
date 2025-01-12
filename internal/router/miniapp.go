@@ -25,6 +25,8 @@ func MiniAppRegister(b *quark.Engine) {
 	// 需要登录认证路由组
 	ag := b.Group("/api/miniapp", middleware.MiniAppMiddleware)
 	ag.GET("/user/index", (&handler.User{}).Index)
+	ag.POST("/user/save", (&handler.User{}).Save)
+	ag.POST("/user/delete", (&handler.User{}).Delete)
 
 	// 订单路由组
 	ag.GET("/order/index", (&handler.Order{}).Index)
