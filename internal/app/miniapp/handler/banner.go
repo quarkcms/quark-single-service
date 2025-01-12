@@ -10,7 +10,7 @@ import (
 type Banner struct{}
 
 // 列表
-func (*Banner) Index(ctx *quark.Context) error {
+func (p *Banner) Index(ctx *quark.Context) error {
 	banners := service.NewBannerService().GetList()
 
 	for index, banner := range banners {

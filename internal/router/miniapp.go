@@ -19,6 +19,9 @@ func MiniAppRegister(b *quark.Engine) {
 	// 轮播组
 	g.GET("/banner/index", (&handler.Banner{}).Index) // 轮播列表
 
+	// 商品组
+	g.GET("/item/category", (&handler.Item{}).Category) // 商品分类
+
 	// 需要登录认证路由组
 	ag := b.Group("/api/miniapp", middleware.MiniAppMiddleware)
 	ag.GET("/user/index", (&handler.User{}).Index)

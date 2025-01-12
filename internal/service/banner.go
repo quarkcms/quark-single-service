@@ -19,7 +19,7 @@ func (p *BannerService) GetList() []response.BannerListResp {
 	db.Client.Model(model.Banner{}).
 		Where("status = ?", 1).
 		Where("deadline IS NULL OR deadline > ?", datetime.Now()).
-		Order("sort desc, id desc").
+		Order("sort, id").
 		Find(&banners)
 	return banners
 }

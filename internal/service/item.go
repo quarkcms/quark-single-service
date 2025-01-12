@@ -7,6 +7,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/quarkcloudio/quark-go/v3/dal/db"
 	"github.com/quarkcloudio/quark-smart/v2/internal/dto"
+	"github.com/quarkcloudio/quark-smart/v2/internal/dto/response"
 	"github.com/quarkcloudio/quark-smart/v2/internal/model"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/utils"
 	"gorm.io/gorm"
@@ -337,4 +338,16 @@ func (p *ItemService) RebuildItemAttrValues(itemId int) (err error) {
 		return
 	}
 	return db.Client.Model(&model.Item{}).Where("id = ?", itemId).Update("attr_values", string(attrValuesJsonData)).Error
+}
+
+// 获取商品分类
+func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategory {
+	itemCategories := make([]response.ItemCategory, 0)
+	db.Client.Model(model.Category{}).
+		Select("id", "pid", "title", "cover_id").
+		Where("status = ? AND type = ?", 1, "ITEM").
+		Where("pid = ?", pid).
+		Order("sort, id").
+		Find(&itemCategories)
+	return itemCategories
 }
