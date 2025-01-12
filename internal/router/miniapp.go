@@ -17,7 +17,7 @@ func MiniAppRegister(b *quark.Engine) {
 	g.GET("/login/mock", (&handler.Login{}).Mock)
 
 	// 轮播组
-	g.GET("/banner/index", (&handler.Banner{}).Index) // 轮播列表
+	g.GET("/index/banner", (&handler.Index{}).Banner) // 轮播列表
 
 	// 商品组
 	g.GET("/item/category", (&handler.Item{}).Category) // 商品分类
