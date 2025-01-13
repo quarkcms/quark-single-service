@@ -341,8 +341,8 @@ func (p *ItemService) RebuildItemAttrValues(itemId int) (err error) {
 }
 
 // 获取商品分类
-func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategory {
-	itemCategories := make([]response.ItemCategory, 0)
+func (p *ItemService) GetCategoriesByPid(pid int) []response.ItemCategoryResp {
+	itemCategories := make([]response.ItemCategoryResp, 0)
 	db.Client.Model(model.Category{}).
 		Select("id", "pid", "title", "cover_id").
 		Where("status = ? AND type = ?", 1, "ITEM").

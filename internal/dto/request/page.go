@@ -3,5 +3,5 @@ package request
 // 分页
 type PageReq struct {
 	Page     int `query:"page" default:"1"`
-	PageSize int `query:"pageSize" default:"10"`
+	PageSize int `query:"page_size" default:"10"`
 }
