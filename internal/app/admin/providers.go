@@ -22,15 +22,3 @@ var Providers = []interface{}{
 	&upload.File{},
 	&upload.Image{},
 }
-
-// 注册高级功能服务
-var ProProviders = []interface{}{
-	&resource.Item{},
-	&resource.ItemCategory{},
-	&resource.Order{},
-	&resource.RefundOrder{},
-	&resource.VerifyOrder{},
-	&resource.Bill{},
-	&resource.BillRecord{},
-	&resource.BillDetail{},
-}

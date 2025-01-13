@@ -18,7 +18,6 @@ import (
 	apptoolservice "github.com/quarkcloudio/quark-smart/v2/internal/app/tool"
 	"github.com/quarkcloudio/quark-smart/v2/internal/middleware"
 	"github.com/quarkcloudio/quark-smart/v2/internal/router"
-	"github.com/quarkcloudio/quark-smart/v2/internal/task"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/env"
 	"github.com/quarkcloudio/quark-smart/v2/pkg/template"
 	"gorm.io/driver/mysql"
@@ -74,11 +73,6 @@ func main() {
 	// 加载自定义管理后台服务
 	providers = append(providers, appadminservice.Providers...)
 
-	// 加载自定义高级功能服务
-	if appPro {
-		providers = append(providers, appadminservice.ProProviders...)
-	}
-
 	// 加载自定义工具服务
 	providers = append(providers, apptoolservice.Providers...)
 
@@ -114,11 +108,6 @@ func main() {
 
 		// 构建本项目数据库
 		database.Handle()
-
-		// 开启高级功能
-		if appPro {
-			database.MiniAppHandle()
-		}
 	}
 
 	// 管理后台中间件
@@ -162,9 +151,6 @@ func main() {
 		// 注册MiniApp路由
 		router.MiniAppRegister(b)
 	}
-
-	// 注册任务
-	task.RegisterTask()
 
 	// 启动服务
 	b.Run(config.App.Host)
