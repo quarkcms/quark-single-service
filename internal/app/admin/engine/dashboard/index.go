@@ -3,7 +3,7 @@ package dashboard
 import (
 	"github.com/quarkcloudio/quark-go/v3"
 	"github.com/quarkcloudio/quark-go/v3/template/admin/dashboard"
-	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/engine/metric"
+	"github.com/quarkcloudio/quark-smart/v2/internal/app/admin/engine/dashboard/metric"
 )
 
 type Index struct {
