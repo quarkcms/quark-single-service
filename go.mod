@@ -2,7 +2,7 @@ module github.com/quarkcloudio/quark-smart/v2
 
 go 1.21
 
-require github.com/quarkcloudio/quark-go/v3 v3.8.4
+require github.com/quarkcloudio/quark-go/v3 v3.8.10
 
 require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
